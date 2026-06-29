@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
+  <!-- 安全加固：仅允许加载本站资源，禁止向任何外部地址发送数据（杜绝信息外传），禁止内联脚本注入 -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
+  <meta name="referrer" content="no-referrer" />
   <title>面包工厂 · 面包店经营管理</title>
   <meta name="description" content="面包店经营管理 App：产品、库存、收银、订单与经营报表。" />
   <meta name="theme-color" content="#8c4e1e" />

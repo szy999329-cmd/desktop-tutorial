@@ -3,6 +3,10 @@
 (function () {
   "use strict";
 
+  // 防点击劫持：若本页被嵌入到别的网站的 iframe 中，立即跳出/隐藏
+  try { if (window.top !== window.self) { window.top.location = window.self.location; } }
+  catch (e) { document.documentElement.style.display = "none"; }
+
   const STORE_KEY = "breadfactory.v1";
   const BREAD_EMOJIS = ["🥖", "🥐", "🍞", "🥯", "🥨", "🧇", "🍰", "🧁", "🍪", "🥧", "🍩", "🥞"];
 
@@ -22,13 +26,53 @@
   function load() {
     try {
       const raw = localStorage.getItem(STORE_KEY);
-      if (raw) return Object.assign(defaultState(), JSON.parse(raw));
+      if (raw) return sanitizeState(raw);
     } catch (e) { /* ignore */ }
     return defaultState();
   }
   function save() {
     try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
     catch (e) { toast("保存失败：存储空间可能已满"); }
+  }
+
+  /* 安全校验：把任何来源（localStorage / 导入备份）的数据重建成干净对象。
+     只复制已知字段、强制类型、白名单 emoji，从根上杜绝 XSS / 原型污染 / 类型混淆。 */
+  function num(v, min) { const n = Number(v); return Number.isFinite(n) ? Math.max(min, n) : min; }
+  function str(v, max, fallback) { return typeof v === "string" ? v.slice(0, max) : (fallback || ""); }
+  function safeEmoji(e) { return BREAD_EMOJIS.indexOf(e) >= 0 ? e : "🥖"; }
+  function sanitizeProduct(p) {
+    if (!p || typeof p !== "object") return null;
+    return {
+      id: str(p.id, 40) || uid(),
+      name: str(p.name, 60, "未命名"),
+      emoji: safeEmoji(p.emoji),
+      category: str(p.category, 30, "其他"),
+      price: num(p.price, 0), cost: num(p.cost, 0),
+      stock: Math.floor(num(p.stock, 0)), low: Math.floor(num(p.low, 0)),
+    };
+  }
+  function sanitizeOrder(o) {
+    if (!o || typeof o !== "object" || !Array.isArray(o.items)) return null;
+    const items = o.items.map((i) => (i && typeof i === "object") ? {
+      productId: str(i.productId, 40), name: str(i.name, 60), emoji: safeEmoji(i.emoji),
+      price: num(i.price, 0), cost: num(i.cost, 0), qty: Math.floor(num(i.qty, 0)),
+    } : null).filter(Boolean);
+    const total = num(o.total, 0), cost = num(o.cost, 0);
+    return { id: str(o.id, 40) || uid(), items, total, cost,
+      profit: Number.isFinite(Number(o.profit)) ? Number(o.profit) : total - cost,
+      createdAt: str(o.createdAt, 40) || new Date().toISOString() };
+  }
+  function sanitizeState(raw) {
+    let obj;
+    try { obj = typeof raw === "string" ? JSON.parse(raw) : raw; } catch (e) { return defaultState(); }
+    if (!obj || typeof obj !== "object") return defaultState();
+    const s = defaultState();
+    s.shopName = str(obj.shopName, 40) || s.shopName;
+    s.currency = str(obj.currency, 3) || s.currency;
+    s.seeded = !!obj.seeded;
+    s.products = Array.isArray(obj.products) ? obj.products.map(sanitizeProduct).filter(Boolean) : [];
+    s.orders = Array.isArray(obj.orders) ? obj.orders.map(sanitizeOrder).filter(Boolean) : [];
+    return s;
   }
 
   function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
@@ -143,7 +187,7 @@
       <h2 class="section-title">⚠️ 补货提醒</h2>
       ${lowStock.map((p) => `
         <div class="row">
-          <div class="row__emoji">${p.emoji}</div>
+          <div class="row__emoji">${esc(p.emoji)}</div>
           <div class="row__main"><div class="row__name">${esc(p.name)}</div><div class="row__meta">仅剩 ${p.stock} 件 · 预警线 ${p.low}</div></div>
           <div class="row__right"><button class="btn btn--sm btn--soft" data-restock="${p.id}">补货</button></div>
         </div>`).join("")}` : ""}
@@ -152,7 +196,7 @@
       ${top.length ? top.map((p, i) => `
         <div class="row">
           <div class="row__emoji">${["🥇","🥈","🥉"][i] || "🏅"}</div>
-          <div class="row__main"><div class="row__name">${p.emoji} ${esc(p.name)}</div><div class="row__meta">累计售出 ${p.qty} 件</div></div>
+          <div class="row__main"><div class="row__name">${esc(p.emoji)} ${esc(p.name)}</div><div class="row__meta">累计售出 ${p.qty} 件</div></div>
           <div class="row__right"><div class="row__price">${money(p.revenue)}</div></div>
         </div>`).join("") : `<div class="card muted">还没有销售记录，去收银开张吧！</div>`}
     `;
@@ -171,7 +215,7 @@
         const margin = p.price > 0 ? Math.round((1 - p.cost / p.price) * 100) : 0;
         return `
         <div class="row" data-edit="${p.id}">
-          <div class="row__emoji">${p.emoji}</div>
+          <div class="row__emoji">${esc(p.emoji)}</div>
           <div class="row__main">
             <div class="row__name">${esc(p.name)}</div>
             <div class="row__meta">成本 ${money(p.cost)} · 毛利率 ${margin}% · 库存 ${p.stock}</div>
@@ -198,7 +242,7 @@
       <h2 class="section-title">库存明细（点击调整）</h2>`;
     html += state.products.slice().sort((a, b) => (a.stock - a.low) - (b.stock - b.low)).map((p) => `
       <div class="row">
-        <div class="row__emoji">${p.emoji}</div>
+        <div class="row__emoji">${esc(p.emoji)}</div>
         <div class="row__main">
           <div class="row__name">${esc(p.name)}</div>
           <div class="row__meta">预警线 ${p.low} · 库存成本 ${money(p.stock * p.cost)}</div>
@@ -222,7 +266,7 @@
       return `
       <button class="pos-item ${out ? "is-out" : ""}" data-pos="${p.id}">
         ${q ? `<span class="pos-qty">${q}</span>` : ""}
-        <div class="pos-item__emoji">${p.emoji}</div>
+        <div class="pos-item__emoji">${esc(p.emoji)}</div>
         <div class="pos-item__name">${esc(p.name)}</div>
         <div class="pos-item__price">${money(p.price)}</div>
         <div class="pos-item__stock">${out ? "已售罄" : "库存 " + p.stock}</div>
@@ -258,7 +302,7 @@
     const lines = ids.map((k) => {
       const p = state.products.find((x) => x.id === k);
       return `<div class="cart-line">
-        <span>${p.emoji}</span>
+        <span>${esc(p.emoji)}</span>
         <span class="cart-line__name">${esc(p.name)}</span>
         <div class="stepper">
           <button data-cart="${k}" data-delta="-1">−</button>
@@ -274,7 +318,7 @@
       <div class="cart-line" style="border:none"><span class="cart-line__name" style="font-weight:800">合计</span>
         <span style="font-size:18px;font-weight:800;color:var(--crust)">${money(total)}</span></div>
       <button class="btn btn--primary btn--block mt12" id="confirmOrder">✓ 完成收款</button>
-      <button class="btn btn--ghost btn--block mt8" onclick="(${closeModalRef()})()">取消</button>
+      <button class="btn btn--ghost btn--block mt8" id="cancelCheckout">取消</button>
     `, (body) => {
       body.querySelectorAll("[data-cart]").forEach((b) => b.onclick = () => {
         const id = b.getAttribute("data-cart");
@@ -283,9 +327,9 @@
         renderCartBar();
       });
       body.querySelector("#confirmOrder").onclick = completeOrder;
+      body.querySelector("#cancelCheckout").onclick = closeModal;
     });
   }
-  function closeModalRef() { return "function(){document.getElementById('modalRoot').innerHTML=''}"; }
 
   function completeOrder() {
     const ids = Object.keys(cart).filter((k) => cart[k] > 0);
@@ -348,7 +392,7 @@
       <div class="card">
         ${top.map((p) => `
           <div class="bar-row">
-            <div class="bar-row__label">${p.emoji} ${esc(p.name)}</div>
+            <div class="bar-row__label">${esc(p.emoji)} ${esc(p.name)}</div>
             <div class="bar-track"><div class="bar-fill" style="width:${Math.round(p.qty / maxQty * 100)}%"></div></div>
             <div class="bar-row__val">${p.qty} 件</div>
           </div>`).join("")}
@@ -465,7 +509,7 @@
           const f = inp.files[0]; if (!f) return;
           const r = new FileReader();
           r.onload = () => {
-            try { state = Object.assign(defaultState(), JSON.parse(r.result)); save(); closeModal(); render(); toast("导入成功"); }
+            try { state = sanitizeState(r.result); save(); closeModal(); render(); toast("导入成功"); }
             catch (e) { toast("文件格式错误"); }
           };
           r.readAsText(f);

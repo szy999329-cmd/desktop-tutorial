@@ -1,5 +1,5 @@
-/* 面包工厂 Service Worker —— 离线缓存 */
-const CACHE = "breadfactory-v1";
+/* 面包工厂 Service Worker —— 离线缓存（安全加固版） */
+const CACHE = "breadfactory-v2";
 const ASSETS = [
   "./",
   "./index.html",
@@ -23,16 +23,35 @@ self.addEventListener("activate", (e) => {
   );
 });
 
+// 只缓存“同源、状态正常、非不透明”的响应，杜绝缓存投毒
+function cacheable(res) {
+  return res && res.ok && res.type === "basic";
+}
+function putCache(req, res) {
+  const copy = res.clone();
+  caches.open(CACHE).then((c) => c.put(req, copy)).catch(() => {});
+}
+
 self.addEventListener("fetch", (e) => {
-  if (e.request.method !== "GET") return;
+  const req = e.request;
+  if (req.method !== "GET") return;
+  let url;
+  try { url = new URL(req.url); } catch (_) { return; }
+  if (url.origin !== self.location.origin) return; // 只处理同源请求
+
+  const isHTML = req.mode === "navigate" || (req.headers.get("accept") || "").includes("text/html");
+  if (isHTML) {
+    // HTML：网络优先，保证更新能及时生效；断网回退缓存
+    e.respondWith(
+      fetch(req).then((res) => { if (cacheable(res)) putCache(req, res); return res; })
+        .catch(() => caches.match(req).then((c) => c || caches.match("./index.html")))
+    );
+    return;
+  }
+  // 其它同源静态资源：缓存优先
   e.respondWith(
-    caches.match(e.request).then((cached) =>
-      cached ||
-      fetch(e.request).then((res) => {
-        const copy = res.clone();
-        caches.open(CACHE).then((c) => c.put(e.request, copy)).catch(() => {});
-        return res;
-      }).catch(() => caches.match("./index.html"))
+    caches.match(req).then((cached) =>
+      cached || fetch(req).then((res) => { if (cacheable(res)) putCache(req, res); return res; }).catch(() => cached)
     )
   );
 });
