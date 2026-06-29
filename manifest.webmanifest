@@ -1,0 +1,18 @@
+{
+  "name": "面包工厂 · 面包店经营管理",
+  "short_name": "面包工厂",
+  "description": "一款面包店经营管理 App：产品、库存、收银、订单与经营报表，数据本地保存，可离线使用。",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fff3e0",
+  "theme_color": "#8c4e1e",
+  "lang": "zh-CN",
+  "categories": ["business", "productivity", "food"],
+  "icons": [
+    { "src": "assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
+  <!-- 安全加固：仅允许加载本站资源，禁止向任何外部地址发送数据（杜绝信息外传），禁止内联脚本注入 -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; manifest-src data:; connect-src 'none'; base-uri 'none'; form-action 'none'" />
+  <meta name="referrer" content="no-referrer" />
+  <title>面包工厂 · 面包店经营管理</title>
+  <meta name="description" content="面包店经营管理 App：产品、库存、收银、订单与经营报表。" />
+  <meta name="theme-color" content="#8c4e1e" />
+  <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoi6Z2i5YyF5bel5Y6CIMK3IOmdouWMheW6l+e7j+iQpeeuoeeQhiIsInNob3J0X25hbWUiOiLpnaLljIXlt6XljoIiLCJkZXNjcmlwdGlvbiI6IumdouWMheW6l+e7j+iQpeeuoeeQhiBBcHDvvJrkuqflk4HjgIHlupPlrZjjgIHmlLbpk7bjgIHorqLljZXkuI7miqXooajvvIzmlbDmja7mnKzlnLDkv53lrZjvvIzlj6/nprvnur/kvb/nlKjjgIIiLCJzdGFydF91cmwiOiIuIiwic2NvcGUiOiIuIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJvcmllbnRhdGlvbiI6InBvcnRyYWl0IiwiYmFja2dyb3VuZF9jb2xvciI6IiNmZmYzZTAiLCJ0aGVtZV9jb2xvciI6IiM4YzRlMWUiLCJsYW5nIjoiemgtQ04iLCJpY29ucyI6W3sic3JjIjoiZGF0YTppbWFnZS9wbmc7YmFzZTY0LGlWQk9SdzBLR2dvQUFBQU5TVWhFVWdBQUFNQUFBQURBQ0FZQUFBQlMzR3dIQUFBR3NFbEVRVlI0MnUzVDNiTldZeGpIOGZWSCtCZWtWNVZTMlJrbkRodzRjT0RBVEY1S0taUlNLQkhUakRHR2NlTEFqQ0ZFMklSSTcrK3ZpaEtKaUVSdkpFbGw5d2ZjMXJQejdQYmVQZmZlejFyUHZkYTZydnY2UGpPZm1SM3Q1NXJXK24yVFJOSEhYVHptb0VQQ0orTzRPNDQ2Mk1MZ0FVdEI4SkpoTWdaZUtFeUc0RHArYzBBSURCK1FIZ0l2Q0daRDRLWEFiQVN1NDFjSFZJSGhBMVdFNFA1TkR3T0NNSDRRUWZIalArSUF5UmcvaUlEeGd3Z0lBQVFRWXZ5L09FQWp4ZzhpWVB3Z0FnSUFBV1FZLzRYRERvZ0pBWUFBR0QrSWdBQkFBSXdmUk5BZ2dKOGRFRFBHRHlJZ0FCQUFBWUFBNnVQL3lRR1c5QXpnZlBvZkFVTUlBQVJBQURBZmdEdC95QUVXRVFBSWdBY0JBZ0RzQnZDakF5d2lBQkFBRHdLMkF6aVgvZ0V3NlA4QWZuQ0FSWXdmQkFBUUFHQXpnSU1Pc0lvQVFBQUFBUUFFQUZnTDRKL3ZIV0FWQVlBQUFBSUFiQWJ3blFPc0lnQVFBRUFBZ00wQURqakFLZ0tBOFFET3BqOEFSaEVBckFmd3JRT3NJZ0FRQUVBQUNPYmlyaGNLdy9NTkhzQitoM3c2ZGo0bkJ1OGpId0pvMG9WdHo2akRleU9BbHN4cXU2clR1YzBMMWVOOUVrQ20wZmQyZHYyQ2FQQ2V1d2Z3OXpmT3VqTnI1bC9CRjBLanY2dVo5WGR2T29EVEsrZjJ5UmRCZjcrbkVRRVljbXI1bkV4OElXVDlIZzBJSUdJbmw4M016UmRCSzk4cEdRRkU1UGpTNmNINFFnaDVReElEQVh6dFlsVWY1OUgyYVVINUlnaDlSNUpZTjVMRVB2NjZJMHNtQitjTG9ZaGJFaENBQW9jWFQremtHMmY5LzRkVTFoMHBDRUNvUTRzbTlPQ0xvUGZmQzZITVd4SkVGTUErRjRPRHI5emg1UnRuWDcrVFY1bTNxaGJEYmhKM0p2MUJzUU12Mzk0VTN6Q2IvZjBzeXJ3bGdlYjlxQTVnLzB1M1plWWJaNTd2a25TcmFnUlFzbjB2M3BxYmI1aXRmS2VFVzFWVEdzQlhUcHM5ejk4U2hHK2NvYjYvcWx0VjByWWxkUUhzZnZibTRIemoxSHFuYWdSUW9OcGdkaXk4S1RqZk9MWGZxZ0lCRkRqKzdyWS9mV053dm5GcXZWTVZSUUhzZFJyNEJyUHRxZkhCeFhxcmJCcDJwU2FBclF2R2QvSU5wdjcvUTRyMVZsa0lJSkF0NmNQc3JkRllHdjI5VnZtR3FmMVdXZVFIOEZmNmcyQmJubXp6OGc2bWo5L0pLOVpiWlpDOHJ6U0FQVTZ5elUrMDljczNtR1orTjR1eTdwUjlxMmlTOXlVNmdFM3piMmlhYnpCWnZzUDZyU0lSUUE0YjB3ZVhsVzh3ZWI0cno2Mnk3aFIxcXlnRWtNT0d4OGZsNGh0TTN1K3plQ3MwQXNnNi9ubmpXdVlkVElEdnJ1cFdtZittMElRRzhLV1RhUDI4c1VINEJoUHEreTNjQ2tYaXpzUUdzRzd1MktCOGd3bDlSOEt0SXU2RVFBQk5XdnZZMkVMNGhzbXQ4aEJBVXdHTUtaUi9NTndxbXNBQXZuRFNySGwwVENsOGc5RjZwK3hiZVVqYld1Sk9wejhJcy9xUjYwdmpHd3kzaWlGdGF5SURXSlUrcUxMNUJxUDFUdG0zbWtVQXpRUXdaM1FsdklQaFZqQUNBOWp0cEZrNWUzU2xmSVBSZkt2TWYxTmZwRzFOWkFBclpvK3FuRzh3M0dvTkFUVGhzNGRIaWVFYmpPWmJaZjZiZWlPQUppeWZOVW9VMzJDNGxaM0FBSFk1aVpiUHZFNGM3MkM0MVJTSk94TWJ3S2ZwQTVPcTBWakt1cVA1RmdGazhNbERJMFh6RFlaYmZqSUQrRFA5UWFCbE0wYXE0QnVNMWp0RjNwSzRzelNBejUxVXkyYU1VTUUvR0c3VlNkMlk2QUErbmo0Q2tTQ0FuRDU2Y0RpVWs3d3Y4UUY4bUQ1QTZDWThnSjFPdXFVUERJZFMwcmVsSTREN3I0VlNCQkRJQituRGhDNGFkcVVtZ0pyM3B3MkRFbG8ycFNxQTlxbkRvSVNlQUU3dGNKcTBUeDBLNFRUdFNWMEFOZS9kTnhSQ2FkdVN5Z0JxM3AweUZNSm8zSkhhQUdyZW1USUVRbWpkVUJyQWRxZlprc2xEVURITisxRWZRR2NFOXc1R1JiUnZKNG9BYXQ2ZU5CZ2xpMkUzMFFSUTk5YWtRU2hZVEh0SkE5am1Zck40NGlBVUpMYXRSQmxBVndqM0RFUWdzVzRrY1gra1AwVHN6ZlRsb1RVeDd5UDZBT3JldUhzZ01yS3dpelNBcmM2UzErKzZCdjJ3dEFkekFkUXRTbDgwZXJLNEE3TUJkSVZ3NXdEekxMOS84d0YwOTlxRUFXYnd2cnNDMk9Kd3BWY25YQjBkM3V1VkNBQUVBQkFBWURLQTN6Yzd3Q29DQUFFQUJBQVFBR0F1Z0UwT3NJb0FRQUNBMlFCcUh4NEVqQWV3MFFFV1hRcmdaUG9Id0NBQ0FBSHdJR0E4Z0EwT3NJZ0FRQUE4Q0JBQVlEV0FTeEdzZDRBbFNmY1BEd1FFQUpnTjRFVDZId0ZEa3Q0ZmQyS2RBeXhJR24xNE1DQUF3R29BUkFEVDQ3OFV3Rm9IeEN6cDc4TkRndG54RXdETUIwQUVNRDErQW9ENUFEb2pPTDdHQVRGSThueDRjREFkQUJIQTlQaUpBT2JIZnptQzFRN1FKQW41NFlIQ2RBQkVBTlBqSndLWUgvL2xDRlk1UUtLa3JBOFBHMmJIM3hYQnNmUXdJRUJTNVljWEFKUEQ3eG5CU2dlVUtaSDI0YVhBN1BnSkFlYUhUd2hnK0ExRFdPR0FQSktZUHJ4UW1CdytNWURSRXdRRUR2NC83MDBIOXl1eHVNVUFBQUFBU1VWT1JLNUNZSUk9Iiwic2l6ZXMiOiIxOTJ4MTkyIiwidHlwZSI6ImltYWdlL3BuZyIsInB1cnBvc2UiOiJhbnkifSx7InNyYyI6ImRhdGE6aW1hZ2UvcG5nO2Jhc2U2NCxpVkJPUncwS0dnb0FBQUFOU1VoRVVnQUFBZ0FBQUFJQUNBWUFBQUQwZU5UNkFBQVNQRWxFUVZSNDJ1M1lkNjltVlJYQTRmc2gvQXJTZXh1YU1VYU54cWpSR0RVaUNBZ0NVb1VSa0NvQlZDQkdqYkVFQkFFcEFsS2sxNEdoRndGQlFCQ2s5ejZBL3g4UE1BeVh1ZmVTOTc3N2xMMzNlazd5Sk5mRXpMenZtbnZXK29XWkdVL3hUL1BPVXczQTBHeGZqNmVMSS83Mmt3MUFGTGEreDZFSFFCaDRISHNBUklISHdRZEFFSGdjZlFERWdNZlJCMEFNZUJ4OUFNU0F4OUVIUUF4NEhINEFJZUR4T1B3QVFzRGo4SHNoQUlTQUo5RGhmNklCSURiWDBPRUhRQWg0SEg0QWhJREg0UWRBQ0hnY2ZnQ0VnTWZ4QjBBRWVCeCtBSVNBeC9FSFFBUjRISDRBaElESDhRZEFCSGdjZmdDRWdHZUI0Lzk0QXdBNWNaMGRmd0JFZ01maEIwQUllQngvQUVTQVo0TGovMVk3U0FBb2tDdnUrQU1nQWp5T1B3QWl3T1A0QXlBQ0hIKy9KQUNJQUljZkFJU0E0dzhBSXFDSzQvL2ZCZ0FpRWdBQUlBQWNmd0FRQVk0L0FJZ0F4eDhBUklEakR3QWl3UEVIQUJIZytBT0FDSEQ4QVVBRUNBQUFFQUNPUHdDSWdFNk8vMk1OQURBOXh4OEFSSUFBQUFBQjRQZ0RnQWh3L0FGQUJBZ0FBQkFBamo4QWlBREhId0JFZ0FBQUFBRXcyZkZmMFg0Z0FHQXdqajhBaUlBeEF1RFJCZ0FZbnVNUEFDSkFBQUNBQUhEOEFVQUVDQUFBRUFDT1B3Q0lBQUVBQUFMQThRY0FFU0FBQUNCZ0FCZ3VBQVNNQUlNRmdHQUIwS3o0VHdNQTVFOEFBSUFBY1B3QlFBUUlBQUFRQUk0L0FJZ0FBUUFBQWdBQUNCTUFoZ2NBQVNQQTRBQkFBQUFBdFFlQW9RRkF3QWhvVmp6U0FBRGxFd0FBSUFBY2Z3QVFBYk1ENE0zMi93d0FWRU1BQUlBQWNQd0JRQVFJQUFBUUFBQ0FBQUFBYWd3QXd3R0FnQkZnTUFBZ0FBQ0FHQUh3Y0FNQTFFc0FBSUFBY1B3QklHUUVHQWdBQ0FBQVFBQUFBQUlBQUJBQUFFQ0JBV0FZQUJBd0Fnd0NBQVFBQUJBakFQN2RBQUJ4Q0FBQUVBQUFnQUFBQUFRQUFDQUFBQUFCQUFDVUZRQnZ0UDhEQUFoREFBQ0FBQUFBQkFBQVVITUFQTlFBQUhFNC9nQWdBQUFBQVFBQUNBQUFRQUFBQUFJQUFCQUFBSUFBQUFBRUFBQWdBQUNBZ1FQZ3dRWUFpRVVBQUlBQUFBQUVBQUFnQUFBQUFRQUFDQUFBUUFBQUFBSUFBQkFBQUlBQUFBQUdEb0FIR2dBZ2xwbm05ZllIQUNBVUFRQUFBZ0FBRUFBQWdBQUFBQVFBQUNBQUFBQUJBQUFJQUFCQUFBQUE0d2JBdnhvQUlCWUJBQUFDQUFBUUFBQ0FBQUFBQkFBQUlBQUFBQUVBQUFnQUFFQUFBQUFDQUFBWU9BRHVid0NBV0FRQUFBZ0FBRUFBQUFBQ0FBQVFBQUJBc1FId1d2c0RBQkNLQUFBQUFRQUFDQUFBUUFBQUFOVUV3SDBOQUJDTEFBQUFBUUFBQ0FBQVFBQUFBQUlBQUJBQUFJQUFBQUFFQUpEbWY3ZWZVQXovWGlBQWdBbThjK3Z4NGZoM0J3RUFNWTc4TGNjeEliOHZJQUNnT0cvZi9BdDY0dmNMT2cyQWZ6YkFkTjY2NldlTXpPOGhURWNBd0tUSC9zWmpLWVRmVnhBQU1MVVZ5NCtoRW42ZlFRREFndDY4NFdpQzhQc09Bb0RvUi8vNm93ak9lNEFBZ0FEMjNmb1RjN3l4N0tld2l2Y0VBUUFWSC8zVnZYN2RrVENIOXdjQkFCVWUvZm04ZHMwUk1DL3ZGUUlBTXZYYTFZZTlaOXJqdnlvQ1Z2NDVzQkR2R3dJQU12RHFWWWZPS3pVRUZ2cHo0UVBlUDhvT2dGZmJINkF3cjF4NXlFUlNJMkRTdndlOGw1U21EWUI3R3lqRnk1Y2ZQSlhVRUpqMjd5VWU3eW1sRUFEa2YvUXZPNmdUeVJIUTBlY2dEdTh2QWdDbThOS2xCL1lpTlFUNitselV5L3VNQUlBSnZIakowa0drUk1CUW41RzZlTDhSQUxDYUZ5NCtZQlNwL3pWZ3JNOU4rYnozQ0FCQ2UvNmkvYk9RR2dLNWZBL0tZdzhnQUFqbHVRdjN5MDVxQk9UNG5TaUh2WUFBb083RGY4RysyVXNPZ1FLK0kvbXlKeEFBVk9mWjgvY3BSbW9FbFBSZHlZOTlnUUNnQ3MrY3QxZXhVa09nNU8vTytPd1BCQUJGZXZyY1BhdVFHZ0cxeklIeDJDZjBGQUQzTk5DbHA4N1pvMHFwSVZEclhCaU8vVUtYQkFDZGV2ZlFQWG4yN2xWTGlZRGFaMFAvN0JrRUFOa2QvdFU5Y2RadTFVcjlyd0UxejRaaDJEc0lBTEk3L0I4NWRHZnVXclhrRUtoOFB2VFBIa0lBa04zeG4rM3hNM2FwVm1vRTFEd2JobUVmSVFESTd2RFA5dGpwTzFjdE5RUnFudy85czU4UUFQVG1zZE4yU2o5MDdaOVJLN05oYlBZVUFvQk9QWHJxamgrUmV1aFcvL05xWXo2TXpkNUNBSkRza1ZOMldGRHFvZnU0UDd0MFpzUFk3QzhFQU5NZi81TzNuMGpTb1p2dzd5aFZjZ2hVUGgvNlpZOGhBRmlVaDAvYWJ0RlNEOTAwZjJjcHpJYXgyV3ZNRXdCM056RGJReWQrSjBuS29Vdjl1M09YR2dLMXo0ZCsyVy9NSmdENDZQSC80N2M3a1h6b092b2N1VElieG1MUElRQ1k0OEUvZkt0enFTSFF4MmZLaGRrd0Z2c09BY0FxRC96K203MUpQWFI5ZnJZY21BOWpzUGVZYVY1cGZ5Q3MrMy8zamNHa0hyb2hQK3ZReklheDJJTnhDWURJeC8rM1h4OWM4cUViNFRPYkQ3V3pEd1VBZ2R6M202K05LdlhRamYzNXpZYmEySXNDZ0FEdS9mVlhzNUI2NkhMNUh1WkRMZXhIQVVERjd2blZWN0tUZXVoeS9FNW1RNm5zU1FGQWhlNys1WmV6bG5Mb2N2OXVZODRtd256b2xuMHBBS2pwK0ovd3BTSWtIN3BDdnVjWTg2bDlOblRMM2d3UkFQOW9xTnRkeDMreE9La2hVT0ozTmh0eVkzL1dUUUJVN3M3anZsQ3MxRU5YOG5jM0gzSmhqd29BQ25USHp6OWZoZFJEVjhzY3pJYXgyS2NDZ0lMY2R1em5xcEo2NkdxYmgva3dOSHRWQUZDSVc0LzViSlZTRDEydGN6RWIrbWF2Q2dBSzhONHlQL296MVVvK2RCWFB4bnpvay8wcUFNajgrSC9nbHFNK1hiWFVRMmMyTVdkREdudFdBSkQ1OFovdHBpTS9WYldVUTJjMnNlZkRkT3hiQVVBQngzKzJHNC9ZdGxxcGg4NXNZczZHNmRtN0FvQ0NBaURDTW5mb2hBQUNBQUhnK0grTTVZZHZXNjNVUTFmemJGTG5VL3RzV0J6N3QvZ0F1S3VoWEphNUVEQWJ4bzBBZTdoVUFxQmd5dy9mNWozcHkzeWJhcG1OK2RBLysxZ0FNRklBV09RT25ka2dBQkFBUWR4dzJEYnpTbDNtQy8yNU5UQWI4NkUvOXJJQVlNVGpiNUU3ZEdhRENFQUFCQTRBeTl4c3pBY0JnQUNvelBYdFM3WllLWXQ4bXIrdkpLbUh6bXppL3U0d1AzdGFBTkJYQUJ5NjlWU1NsL21VZjI4cHpNYnZEdDJ3cHdVQUdSMS95OXhzUkJJaWdMa0I4SEw3QTBWWTFyNVlYVWc5ZEYxOWpseVpqOW1ReHI0dWd3QUlkdnd0YzdNeEgwUUFLd1Bnem9hOExUdGs2OTRrTC9JZVAxc096TWRzbUo3OW5UY0JFRHdBTEhPek1SOEVnQUFnUTljZHN0VmdVaGY1a0o5MURPWmpOaXllUFM0QW1EWUFmckxWNEpLWCtRaWYyV3pNaHp6WjR3S0FnZ0tnaTJYdTBJa2tzMEVBQ0FDbWRHMzc4b3d0ZFpubjhCMXluWS9aeEo1UEpQYTVBS0RBQUxETXpjWnNFQUFDZ0NHUC84RmJaU2Q1bVdmNG5YS1pqOW5Fbms4RTlyb0FZT0lBMkRKYjZjdDh5MnFaVFgvenFYMDJ0YlBYQlFBVHVxWjlZWEtXZXVoeS8zN21ZeloweTE0WEFGUncvQzF6c3pFZlJJQUFvSThBT0dqTG9pUXY4c0srci9tWURkT3gzN01MZ0RzYThuSjErNktVS0hXWmwvcTl6Y1o4bUl6OW5oY0I0UGhiNU9aak5vZ0FBY0Q0QWJDa0N1bkxmRW0xek1aOElyUG5CUUFMQmNDQlM2cVN0TWdybTBXWHM2bDlQbVpUTDN0ZUFMQ0FxOW9YcERhcHk3ekdtWFExSDdPSlBaOFMyZk1DZ0NESDN6STNHNUdFQ0JBQUJBOEFoODU4ekFZQklBQ1l4NVUvWGhKRzZqSTNtNWl6TVo4NjJQY0NnRGtCc0VVbzZZdmNmS0xPeDJ6S1p0OExBSUlIZ0dWdU51WWpBQkFBam4vd2hXQ1JtNC9aaUFBR0Q0RGJHOFozeGRJdFdKcSt6TTBtNW16TXB6ejIvdmdFZ0FDb2JwbWJqVWd5R3dIQUpBSHdVdnNEbzdNUUxIT1I1SGNuVkFEWSs2TVRBSm00Zk9ubUxDQjFtWnVOMlpoTmZ1eDlBY0FIQVhEQTVueU01R1Z1UG1aalBsbXg5d1VBQXNBeU54dVJKQUFRQUhGZDFyNFFUQ2IxMEpsUDNQbVlUVDdzZlFHQUFMRE16Y1o4QkFBQ0lIQUE3TDg1VTBoZTVPWVRkajVtTXk1N1h3Q3dLZ0EySTBINk1qZWJpTE14bi9IWSt3S0FsUzV0WHdqU3BDNXk4NGs3SDdNWm5yMmZSUURjMWpBK0M4RXlOeHZ6aVJVQTl2N1lCRUF1QWZDanplaFkwaUkzbTdEek1adGgyUHNDZ0pVdWFWOEl1cGU2ek0zSGJNeW5IL2ErQUVBQVdPWm1JNUlFQUFJZ2NBRHN0eWs5U3o1MDVoTjJQbWJUUFh0ZkFDQUFMSE96TVI4QmdBQ0k2K0wyaFdBNHFZdmNmT0xPeDJ5NlllOExBQVNBWlc0MjVpTUFFQURCSTJEZlRSbEI4aUkzbjdEek1adnAyUGNDZ05YOHZYMHhHRS9xTWplYm1MTXhuOFd6N3dVQWN3SmdFektRdHNqTkp1cDh6R1p5OW4wMkFYQnJReDRjWDh0Y0pQbmRpUkVBOW4wT0JFQk9BYkRQSm1RbWVabWJqZG1ZelJ6MnZRQmdIaGUxTHdkNVNWM201bU0yNXZNaGUxNEFJQUFzYzdNUkFnRm5ZODhMQUFTQVEyYytJaW5nYk94NUFjQUNMdHg3WXdxUXVzek5KdVpzekdkamUxNEFJQUlzY3ZNUlNkRm1ZNy9uRmdBdnRqK1FGY2ZWTWpjYmtWVGpmT3ozdkFpQURGM1F2aWlVSlhXUm0wL2MrVVNhamYwdUFKZ2tBdmJhbUFJbEwzT3pDVG1iQ1BPeDF3VUFBa0FJT0hUbUUzQTI5bnFXQVhCTFEzNHUyR3NqQ3BlK3pNM0hiT3FaajcyZUh3R1FzZlBibDRieXBTNXpzNGs1bTlUNTVQUTk3SE1Cd0dJRFlNK05BSXBubndzQVJBRGcrQ01BbU1UZjJoY0lvRlQydUFCQUJBQ09Qd0tBUlFYQUR6Y0VLSTc5TFFBUUFJQUFRQUF3amZQYWx3bWdGUGEyQUVBRUFJNC9Bb0NrQU5oalE0RHMyZGZGQk1ETkRlVTR0MzI1QUhKbFQ1ZERBQlFYQUJzQVpNdWVGZ0QwR1FHN2J3Q1FIZnRaQUNBQUFBR0FBS0FQNTdRdkcwQXU3R1VCZ0FnQUhIOEVBTDBHd0c0YkFJek9QaFlBak9DdnU2MFBNQnA3V0FBZ0FnREhId0dBQ0FBY2Z3UUEvUWZBRDlZSEdJeTlXMFVBM05SUWg3UGJseEtnYi9adEhXYWFGOW9mcUlibEJQUjYvTzNaYWdpQUtpTmdQWURPMmE4Q2dBS2N0ZXQ2QUoyeFZ3VUFBZ0FRQUFnQVJBRGcrQ01BeU02Wjdjc0xNQzE3VkFCUWNnVHNzaDdBb3RtZkFvQXFJbUJkZ0luWm13SUFFUUE0L2dnQVNuZEcrM0lETE1TZURCVUFOemJFY3NiMzF3V1l3MzZNUlFDSUFBQjdVUUFReVYvYWx4N0FQaFFBaEl5QWRZREE3RUVCUVBRUTJIa2RJQkI3RHdHQUNBREhId0ZBZEtlM3l3R29sejJIQUVBRWdPT1BBSUI1UW1DbmRZQUsyR2NJQUJidHRKM1dCZ3BtanlFQUVBSGcrSU1BUUFpQXcwL3dBRmpld0tSTzIzRnRJR1AyRkpNU0FDemFxZTJTQWZKalB5RUFFQUxnOElNQW9NY0krTjVhd0lqc0lRUUFvL3B6dTRpQTRkZzdwQWZBOCswUDBCR0xHWG8rL1BZTUhSRUFpQUJ3L0JFQTBHRUk3TEFXMEFIN0JBRkFrVTVwRnhpd2VQWUhBb0JLUW1CTllBTDJCUUlBSVFBT1AvUVZBRGMwTUxTVHQxOFRtTVZlWUdnQ0FDRUFEajhDQU1RQU9Qb0lBQmpCbjlvRkNUWHlmaU1BWUpJUStPNGFVQVh2TXdJQWhBQU9Qd2dBRUFNNCtpQUFZR0ludFlzV2N1SzlSQURBMERHdzNSb3dDdThmQWdDRUFBNC9DQUFZMjRuYmZSSTY1YjJpd2dDNHZvR2FPVjVNZi9TOVA5UkxBQUNBQUFBQUJBQUFJQUFBQUFFQUFBZ0FBRUFBQUFBQ0FBQVFBQURBcUFId1hQc0RBQkJLR3dETEdnQWdGZ0VBQUFJQUFCQUFBSUFBQUFBRUFBQWdBQUFBQVFBQUNBQUFRQUFBQUFJQUFCZzRBSzVyQUlCWUJBQUFDQUFBUUFBQUFBSUFBQkFBQUlBQUFBQUVBQUFnQUFBQUFRQUFqQmtBN3o0R0FRQWhBK0RhQmdDSVF3QUFnQUFBQUFRQUFGQnhBRHpiL2c4QUlBd0JBQUFDQUFBUUFBQ0FBQUFBQkFBQUlBQUFnTUlDNEpvR0FJaERBQUNBQUFBQXdnU0FDQUNBZ01kZkFBQ0FBQUFBQkFBQUlBQUFBQUVBQUJRY0FDSUFBQUllZndFQUFHRUQ0T29HQUtpWEFBQUFBU0FBQUNCc0FJZ0FBQWg0L0FVQUFBZ0FBRUFBQUFEVkJvQUlBSUNBeDE4QUFFRFVBSGltL1Q4REFOV1ltZlF4TEFBSWR2d0ZBQUNFRFlDckdnQ2dmRE9MZlF3TkFJSWRmd0VBQUFJQUFJZ1NBQ0lBQUFJZWZ3RUFBQUlBQUlnU0FDSUFBQUllZndFQUFFRURRQVFBUU1Eakx3QUFJR2dBdkI4QlZ6WUFRTDVtK25nTUZnQUNCb0FJQUlDQXgxOEFBRURRQUJBQkFCRHcrQXNBQUFnYUFDSUFBQUllZndFQUFFRURRQVFBUU1Eakx3QUFJR2dBaUFBQUNIajgzdytBS3hvQVlIZ3pZei8rRVFBZzJQRmZGUUZQdHg4SUFPamRURTZQZnhBQUNCZ0FJZ0FBQWg1L0VRQUFRWSsvQUFDQW9BRWdBZ0FnNFBFWEFRQVE5UGdMQUFBSUdnQWlBQUFDSHY4UEkrRHlCZ0JZdkpuU0gvK0lBQkRzK0FzQUFBZ2FBQ0lBQUFJZWZ4RUFBRUdQdndnQWdLREhYd1FBUU5Eakx3SUFJT2p4RndFQUVQVDRpd0FBSFAvQWoxOEFBQVJBMkFpNHJBR0FTR1k4SWdBQXgxOEkrTVVBd09FWEFRRGcrSXNBQUhEOFJRQUFPUDRpQUFBYy80b2k0S2wya0FCUUVOZGJCQURnK0h1RUFBQU92MGNFQU9ENGV4WVRBWmMyQUpBRFYxa0lBT0R3ZTBRQUFJNi9Sd2dBNFBCN1JBQUFqcjlIQ0FEZzhIdEVBQUNPdjBjSUFPRHdlNFFBQUE2L1J3Z0E0UEI3aEFBQURyOW5naEM0cEFFZ0Z0ZlBJd1FBSEg2UFJ3Z0FPUHdlSVFDQXcrOFJBd0E0K2g0eEFJQ2o3eEVEQURqNkhqRUFnS1B2RVFRQU9QZ2VVUUNBWSs4UkJsNTh3S0gzRFBmOEh5UmFGMnpIOFprTUFBQUFBRWxGVGtTdVFtQ0MiLCJzaXplcyI6IjUxMng1MTIiLCJ0eXBlIjoiaW1hZ2UvcG5nIiwicHVycG9zZSI6ImFueSJ9LHsic3JjIjoiZGF0YTppbWFnZS9wbmc7YmFzZTY0LGlWQk9SdzBLR2dvQUFBQU5TVWhFVWdBQUFnQUFBQUlBQ0FZQUFBRDBlTlQ2QUFBUjBVbEVRVlI0MnUzYjZZOWVaZjNIY2Y0SS93WFo5NjIwSmNZWVkwd2d4aGhpRkpGRnJDQmdCUkVMV0NVRU4wS01KaHFqaUN3aWlDQ0NaV2xwYVNsUWlpQWdDTWdtZTluYnN1ano0N210WTl1WnpzeDluZnNzMS9KNko2K0hRcTlmWjg3MzgrREhicnRKa2lSSmtpUkpraVJKa2lSSmtpUkpraVJKa2lSSmtpUkpraVJKa2lSSmtpUkpraVJKa2lSSmtpUkpraVJKa2lSSmtpUkpraVJKa2lSSmtpUkpraVJKa2lSSmtpUkpraVJKa2lSSmtpUkpraVJKa2lSSmtpUkpraVJKa2lSSmtpUkpraVJKa2lSSmtpUkpraVJKa2lSSmtpUkpraVJKa2lSSmtpUkpraVJKa2lSSmtpUkpraVJKa2lSSmtpUkpraVJKa2lSSmtpUkpraVJKa2lSSmtpUkpraVJKa2lSSmtpUkpraVJKa2lSSmtpUkpraVJKa2lSSmtqUlkxUWN2VmtBK2ZOVWtPZmFBVVNBNStBQUdnZVRnQXhnRWtxTVBZQXhJRGo5Z0NFaHk5QUZqUUpMRER4Z0Nrcm84L0M5VUFMSHhkWlljZnNBUWtPVHdBNGFBSk1jZk1BSWtPZnlBSVNBNS9ENFVnQ0VnT2Y0QVJvRGs4QU1ZQWxJZXgvLzVDcUJVcm9BY2Z3QWpRSEw0QVF3QnlmRUhNQUtrWkkvLysvVVBPQUJ6Y2kzaytBTVlBWkxqRDJBRVNJNC9nQkVnT2Y0QVJvQVV3ZkgvWndWQU8xd1ZPZjRBUm9EaytBTVlBWkxqRDJBRVNJNC9nQkVnT2Y0QVJvRGsrQU1ZQVpJQkFHQUFTT01kLytjcUFJYmxHc254QnpBQ0pNY2Z3QWlRREFBQUEwQnkvQUdNQU1ueEJ6QUNKQU1Bd0FDUUhIOEFJMENGRG9EMzZoOHFBSkxnYXFtbDQvOXNCVUJhWEM4NS9nQkdnR1FBQUJnQWt1TVBZQVJJQmdDQUFTREhId0FqUUFZQUFBYUFISDhBakFEbE5BQ2VxUURJaStzbXh4L0FDSkFNQUFBRFFBYUFYeEFBQTBDT1B3QkdnQXdBQUF3QU9mNEFHQUV5QUFBd0FHUUFBR0FBS09yai8zUUZRRmxjUHhrQUFBYUFpaHdBNzlZL0RBQVV4ZldUQVFCZ0FNanhCOEFJa0FFQWdBRWdBd0FBQTBBR0FBQUdnTkk3L2s5VkFKVE5OVFFBQURBQVpBQUFZQURJQUFEQUFKQUJBSUFCSU1jZkFDTkFCZ0FBQm9BTUFBQU1BQmtBQUJnQUdtd0EvS01DZ0JGWDBRQUF3QUNRQVFDQUFTQURBQUFEUUFZQUFBYUFEQUFBREFCRlB3QzIxbi9wQUxEVkFEQUFBREFBbFBzQWVMSUNnQkZYMFFBQXdBQ1FBUUNBQVNBREFBQURRQVlBQUFhQURBQUFEQUFaQUFBWUFESUFBREFBWkFBQVlBQm9rQUh3UkFVQUk2NmlBUUNBQVNBREFBQURRQVlBQUFhQURBQUFEQUFaQUFBWUFESUFBREFBWkFBQVlBQW9oZ0h3ZUFVQUk2NWlTUU5nUy8yWERnQmJEQUFEQUFBRFFBWUFBQWFBREFBQURBQVpBQUFZQURJQUFEQUFaQUFBWUFESUFBREFBRkFjQStEdkZRQ011SW9HQUFBR2dBd0FBQXdBR1FBQUdBQXlBQUF3QUdRQUFHQUF5QUFBd0FDUUFRQ0FBYUFZQnNCakZRQ011SW9HQUFBR2dBd0FBQXdBR1FBQUdBQXlBQUF3QUpUYUFOaGMvNlVEd0dZRHdBQUF3QUNRQVFDQUFTQURBQUFEUU9rUGdFY3JBQmh4RlEwQUFBd0FHUUFBR0FBeUFBQXdBR1FBQUdBQXlBQ0F3ZjM3L2tzNjUvL09HQUF5QUtBbi85cDRjWEw4dldFQXlBQ0FjWTc4aGg4Vnc5ODNCb0FHSEFCL3EyQUlIOXo3QTJiaDU0T2h1SW9HQUxUcS9idS94NFQ4SEdFQXlBQWdldSt0djRpTytUbkRBSkFCUUJUZVhYY2hBL0h6aHdFZ0E0RGVMRjMwb2YvYnV2WUNJdUxuRXdOQUJnQ2RIZjNwdHF6NUxoSHljNHNCSUFPQTFvLytybXhldlp4SStYbkdBSkFCd0p6ZVdYWCtUa0pId1BUL1BmSHhjNDRCVVBvQWVLZitTNGYvZVh2bHVYTUtIUUx6L2ZNWW5wOTdkdVFxRmpVQUhxa28yMXUzTFFzU09nSkMvL2tNeCs4RHJxSUJRQUhldlBXY2lZUU9nVW4vZmZUSDc0Y0JJQU9BREwyeDR1eldoSTZBTnYvZGRNL3Zpd0VnQTRERXZYN3pXWjBLSFFKZC8zbG9uOThqQTBBR0FBbDU3YVl6ZXhNNkF2cjhzOUVldjFjR2dBd0FJcmJweHFXRENSMENRLzVaYWM3dm1RRWdBNERJdkhMREdZTUxIUUVqTWZ5NUNlUDN6UUNRQVVBRVhyNyt0T2lFam9BWTM4RDgvUDRaQUVweUFEeGNrYmFYcmpzMWVxRkRJSVUzTVpQZngvUzVpZ1lBQ1pnNmxpOWVlMG9TUWtkQUt1OWlKcitmQm9BTUFEbysvbE5ldUdaSk1rS0hRRXB2WXp1L3B3YUFEQUE2UFB6VFBYLzF5VWtJSFFHcHZJdVovTjRhQURJQTZQajRUM251cXBPU0VUb0VVbm9iMi9uOU5RQmtBTkRBczFlYzhGK2h4M0xxZnhlN1hOL0ZUSDZmRFFBWkFJenBtY3VQMzBtVC83NSsrajhqVnJtK2k1MzV2VFlBWkFBd2g2Y3ZPMjVPb2NkeXZuOWVMSm9NbkZUZXhzNzhuaHNBTWdDWTVxbExQeisyMEdNWjhzOGVVcTd2WW1kKzN3MEFEVG9BSHFxSXg1Ty8vRnl3MEdQWjVOOHhsSnpmeGpaKzcrUGlLaG9BRE9DSlgzeDJJcUhIY3RKL1gxOXlmUmZiK2YwM0FHUUFGT3Z4bngvVGl0QmoyZGEvdHc4NXY0MWpmQWNNQVBVK0FONnUvOUlaekdNLyswd25RbzlsVjM4Tzd5S1U3OEt3WEVVRGdCNDgrdE5QZHlyMFdIYjk1L0UyeHVYN1lBRElBTWpXSXovNVZHOUNqMldmZnpidllqYStFd2FBRElEc1BQempvM3ZYNUwrdkgrTFAyY2ZiVW5rWFIvdGVHQUF5QVBMeDBDVkhEU3IwV0E3OTV5MzlYUnpsdTJFQXFMc0I4TmVLZmp4NDhTZWpFWG93WS9xemwvaXUwdmwrOU1kVk5BQm8yUU0vL0VSMFFvOWxqRzlvNDEwcHZhMWt2aU1HZ0F5QTVHejgvc2VqRm5vc1kzOVA3dThxbWUrSkFTQURJQ24zWGZTeDZJVWV5eFRlVk1MYlN1TjdZZ0RJQUVqRzZLQnN1UENqeVFnOWx0NUYzM3hYREFBWkFFa2MveDNkYzhGSGtoQjZMRk41Vis1dks0bnZpd0VnQXlDWjQ3K2p1Nzl6WkJKQ2o2VjMwU2ZmR1FOQUJrQlN4OSt4OURhTUFBTkFCa0RCQTJESyt1VkhKaUgwV0hvWGZmQzlNUUEwMFFCNHNLSTk2NWN2Ym5CVUZpZWh5WDlmbit2YlVubFhDWHgzMnVVcUdnQTBjTmUzRis4azlLaE0vOS9IeXJ2U2UxdnVmSDhNQUJrQVVRMkFuSStsSVdBRUdBQUdnQXdBWmpuK2pxV0JneEZnQU1nQXlOaTY4eGVQSmZTZ2pQdlBqVUd1Yjh2NTd5eEh2a2NHZ0F5QW5nZkFvaURoUjJWUkVuSjlWKzV2eTRudmtRR2drQUh3VnYyWFRtTU9pb0ZqQkVRMkFueVhKdUlxR2dDTWFlMTVpeVlTZWxRbS9mZjFKZGQzNWY2MkhQZ3VHUUFhZXdBOFVOSE1VQWZGRVBBdTVoc0J2azlOdVlvR0FHTzQ4N3lGclFvOUttMy8rN3ZTWk9EaytyWlUzcFU2M3ljRFFBWkFkOGYvM0lXZENUNHFIZjVadkt2Y2Q2WE9kOG9Ba0FHUTNBREkvYWdZQW9hQUFXQUF5QUJJMHByNjQ5S1gwS1BTNTUvTnV5Wi9WMHB2UzVIdmxRRWdBNkRkQWJCc1lhK0NEMHJQZno1dksrdnZMQ1crVndhQURJQldyVjUyeENCQ2o4cFFmMDd2S3VOdEtmQzlNZ0JrQUNSLy9CMUxBd2Nqd0FDUUFURGtBUGpXRVZFSVBpcVIvTGxMZlZmdWI0dVo3NVlCb0ZrSHdGOHF4bmRIL1VHSlJaUC9oN09ZL3Z4dHZzMjdtSTN2VmhoWDBRQmdsOGQvUVpUQ2o4cUNKT1Q2cnR6ZkZpUGZMd05BQnNCa0ErQ2NCVkVMUGlxUnY4ZTcwbnhYakh5L0RBQVpBQk5aVlg5SVloZDZWRko0VTVOMzVmeTJWTjRWRTk4dkEwQUdRUFlEd0JBd2NEQUFEQUFaQUMxYitjMEZTUWs5S043bVhibnkvVElBWkFCTWNQd1BUMWI0VWZFdWI4dVA3NWdCSUFPZ3VBSGdXQm80R0FBR2dIWXhBTzZ2bU4vdFp4K2VoZENqNGwzZWxndmZzZkc0aWdZQW1RNEF4OUxBTVFBd0FMUnRBTHhaLzZVenJ4dy9pSTZsZ1ZQVUFQQWRHNHVyYUFBd3pXM2ZPQ3hMVGY3enMxemY1bDE1OHgwekFHUUFHQUNPcFNGZ0FHQUF5QS84ZUc2dFB5QWxDRDBxM3VWZHFmQWRNd0JrQURRYkFHY2RWb3pnbytKdDNwVUEzekVEUUFaQXd3RndhSEhDajRwM3BmU3VsTjdXQnQ4eEEwQXpCc0RHaXZuZFVuOUFTaFI2VUx6TnUyTGxPelllVjlFQVlQb0FPUFBRb2dVZkZlL3l0c2o0amhrQU1nQWFXVkYvUUVvWGVsQzh6YnRpNGp0bUFNZ0FNQUFjRlFPbndDSGdPMllBeUFCb05nQytmZ2c3YVBML2NKYnIyN3dyRGI1akJvQU1nRWIrWEg5QW1DbjBxSGlYdHczRmQ4d0FrQUZnQURncTNsWGdDUEFkTXdCa0FEUWJBRXNQWVI3QlJ5WFRkK1g4dHBSL1BuM0hEQUFaQUkzY3ZQUmd4aFI2Vkx3cnJYZWw5TFlkK1k0WkFKb3hBTzZyR0kvajdsZ2FBbW4rbmZsK2pjOVZOQURZaFp1K2RqQ0JRbytLZDNsYkYzeS9EQUFaQUFhQWcrSnRCYjdMOThzQWtBRmdBRGdxM2xYZzIzeS9EQUFaQUJQNzB4a0hNWUhRZytKdDNqVXAzeTBEUUxNTmdEZnF2M1RHNW9nN0tnWk9XbS96M1Fyaktob0F6T0xHK29OQ081cjg1MmU1dnMyN3V1TzdaUURJQUdodkJKeCtFQzBLUGlxWnZpdm50dzMxNS9TOU1nQTA1d0RZVUJIbXh0TVBwQVBoUjhXN3ZHdHV2bGZoWEVVRGdEbjhzZjZ3MEkzUW8rSnQzalVYM3lzRFFBWkEreVBndEFPQmlQbE9HUUF5QUF3QU1BQXdBR1FBdE9lRytpTUR4TWYzeVFDUUFkRHRBUGpxQVVDRWZKOE1BQmtBbmJ1Ky90Z0E4ZkJkTWdCa0FCZ0FZQUJnQU1nQTZIQUVuSG9BRUFIZkl3TkFRUVBnM29ySi9LSCs4QUREOHoyYW5LdG9BQkE4QXZZSEJ1UTdaQURJQUJodUJKeXlQekFBM3g4RFFBYkFvSzZyUDBSQS8zeC9EQUFaQUVZQU9QNFlBRElBaHZIN3Ird0g5TUQzeGdDUUFXQUFnQUdBQVNBRHdBZ0F4eDhEUVBNTWdIc3F1bkh0a3YyQUR2aStkTWRWTEdrQXZGNy9wZE1aSDJ0bytmajdyblRLVlRRQWFNazFTL1lGV3VTN1lnRElBRWhuQkh4NVg2QUZ2aWNHZ0F3QUl3QWNmd3dBR1FCcCtGMzlFUVBDK1g0WUFESUEwaDhCSis4REJQRGRNQUJrQUJnQjRQaGpBTWdBU052Vlg5b0htSVB2aEFHZ3pnZkEzUlhEOEpHSDJZNi83OE5RWEVVRGdKNzh0djdZQWR2NUxoZ0FNZ0RLR1FFbjdRM1VmQThNQUJrQVJnQTQvaGdBTWdES2NWWDlJWVNTK0wwM0FHUUFNRFVDVHR3Yml1RDMzUUNRQVlBUmdPT1BBU0FEZ0NsWG5yZ1haTVh2dFFHZ2FBYkErb3E0WFhuQ1hwQUZ2OC94Y3hVTkFDSnpSZjN4aEpUNVBUWUFaQUJnQ09Ed1l3RElBQ0I0QkJ5L0p5VEI3NnNCb0pnSHdHdjFYenBKdXJ6K3dFS00vSDZteTFVMEFEQUV3T0UzQUdRQUVMdmZmSEZQR0pUZlF3TkFCZ0NHQUE0L0JvQU1BSVlaQW50QXAveWVHUUJLZmdEY1ZaR3Z5NDdiQTFybDl5cHZycUlCZ0NFQURyOEJJQU1BUXdDSEh3TkFCZ0RKKy9VWGRvYzUrVDB4QUdRQVlBemc2R01BeUFBZ1Y1ZldCNEF5K2ZuSEFEQUFZTnNZT0haM011Zm5IQVBBQVBCRGp5SGc4SU1CVU40QVdGZkJPSDUxN0lkSmxKOWZ4dVVxR2dBQUdBQXlBQUF3QUdRQUFHQUF5QUFBd0FDUUFRQ0FBU0FEQUFBRFFBWUFBQWFBSWhnQW0rcS9kQURZWkFBVU5nRFdWZ0F3NGlvYUFBQVlBRElBQURBQVpBQUFZQURJQUFEQUFKQUJBSUFCSUFNQUFBTkFCZ0FBQm9CaUdBQjNWZ0F3NGlvYUFBQVlBRElBQURBQVpBQUFZQURJQUFEQUFKQUJBSUFCSUFNQUFBTkFCZ0FBQm9BTUFBQU1BQTB5QU5aVUFERGlLaG9BQUJnQXlub0F2RnIvcFFQQXF3YUFBUUNBQVNBREFBQURRQVlBQUFhQURBQUFEQUFaQUFBWUFFcGhBS3l1QUdERVZUUUFBREFBWkFBQVlBRElBQURBQUpBUkFJRGpMd01BQUFOQUJnQUFCb0FNQUFBTUFCa0FBQmdBR25RRTNGRUJVQ1pYMEFBQXdBQ1FBUUNBQVNBREFBQURRRVlBQUk2L0RBQUFEQUFsT1FCZXFYOFlBQ2lLNnljREFNQUFVTGtqWUZVRlFCbGNQUmtBQUFhQURBQUFEQUFaQVFBNC9qSUFBREFBWkFRQTRQakxBQURBQUpBQkFJQUJJQ01BQU1kZjBRK0FsUlVBZVhIZFpBUUFPUDZTQVFCZ0FFaEdBSURqTHdNQUFBTkFSZ0FBanI4TUFBQU1BQmtCQURqK3ltMEUzRjRCa0FaWFMrME5nSmZySHlvQWt1QnF5UWdBY1B3bEF3REFBSkNNQUFESFh6SUNBQngveVFBQU1BQWtJd0RBOFplTUFBREhYeVdQZ05zcUFJYmhDc2tBQURBQUpDTUF3UEdYakFBQXgxOHlBZ0FjZjhrSUFIRDhKU01Bd1BHWGpBQUF4MThLR3dHM1ZnQk14aldSRVFEZytFdEdBSURqTHhrQkFJNi9aQVFBT1A1U1BDUGdwZm9ISElCZGNpVmtCQUE0L3BJaEFPRHdTMFlBZ09NdnBUOENicWtBU3VQckx4a0NnTU12R1FFQWpyOWtDQUE0L0pJaEFPRHdTMFlBZ09NdkdRSUFEcjlrQ0FBNC9GSitRMkJGQlRBMFgyUEpFQUFjZmtuR0FPRG9TeklFQUlkZmtqRUFPUHFTREFMQXdaZGtFQUFPdmlTakFIRHNKVW1TSkVtU0pFbVNKRW1TSkVtU0pFbVNKRW1TSkVtU0pFbVNKRW1TSkVtU0pFbVNKRW1TSkVtU0pFbVNKRW1TSkVtU0pFbVNKRW1TSkVtU0pFbVNKRW1TSkVtU0pFbVNKRW1TSkVtU0pFbVNKRW1TSkVtU0pFbVNKRW1TSkVtU0pFbVNKRW1TSkVtU0pFbVNKRW1TSkVtU0pFbVNKRW1TSkVtU0pFbVNKRW1TSkVtU0pFbVNKRW1TSkVtU0pFbVNKRW1TSkVtU0pFbVNKRW1TSkVtU0pFbVNKRW1TSkVtU0pFbVNKRW1TSkVtU0pFbVNKRW5wOXgvVjdWSXRYRHQ3YndBQUFBQkpSVTVFcmtKZ2dnPT0iLCJzaXplcyI6IjUxMng1MTIiLCJ0eXBlIjoiaW1hZ2UvcG5nIiwicHVycG9zZSI6Im1hc2thYmxlIn1dfQ==" />
+  <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAACiElEQVR42u3bW0tUURgG4PUj/AuRUZFR0fG+H+CdREVEiIREWAQR3da9NxFUBBFCSDR5yNSytLKzlVraYcZOlmkHf8Db2s5e6djsmfWtw57t/hx4YPaebw/f+17vJYTFB7NZJIXw+cGfD1iqLIO/R1oYhH+HtNEP/1s+kFIa4d8i7UqEHwcX/4f/NQZulguYD/8GXIUFvAZX+QJ+ygumwgJGwVVYwAi4yhcwMwyuWIcPC3gFzgSmX4Kz5QIw/QKcyQKGwJnAj+fgrCIFzA6cjlSBAp7Bp8ZtVZjpOWnF534CU0/h2mTmyD9BAYGF92y43tVpAbmWhkiqiFIzFA4LeAIXVMCx83si6cxQuNhb4Ptj2Bhqri2gQi6+T52hsNlfFvAIpgZP7SxKBYz6XXeGwjSDVQFBgL4TOyKpkLYzOiwKeAgTvce3zwmWV9+LUQFtZ3SY5BD4Ngiq7mNbC6gAi+/7mCmHmsWogK6jW4pSAaJ+15nR+Y9SDAp4AKqOps2RVIA4ZoqhZhGYvA+qtsObylIB4phZiJpFFnAPVJlDG7Wo5eOYUahZjAq42riBRAWIY8aggAFQtR5cT6aW9z1DzSLwtR9UVxpqEouaRRZwFyZa6tcljkkO4wIClw+sTQzTDAJf7sDUpf1rEsM0gyygDzYu7ltdcTb7WxegXNi7KnYu9hb4fBuunNtdHRtXO8sCbsG1s7tWeuN6V1lAL3w6U7fCms/9vBeQdAKfesCZLKAbnOXfEWJfwMeb4CosoAtchQXcAFf5AibkBVNhAZ3gav6V+YkOcFN4YIJ7AXMl5NrBRfTBqVwb0q780bncdaSV/uHJrHwgZejHZ7MZpIXdIersNSxV5bL9BXUQXAoyxxQrAAAAAElFTkSuQmCC" />
+  <link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAYAAAA9zQYyAAAGWklEQVR42u3U29NXUxjA8f1H+BdIR52P3LhwY8aNCzNCEYUoiShNF80wY1y4cGEIIUIInc8nIiQiIlJekaTzH/DY+3390mGt9/0d1l77Wc/+rpnPzH7f3977mVnrOzvLlC85d1igS8byxHr2kMAmIgZxEzGIO2rIvwrgQsggbEIGYRMz6hy1nD0oQEjEDKLuOOYz+WCgRMQMom495l8EiImYQdTEjNpEzWbCTNRy5mcBNCFoEDQxw1TUcjp/EFCsxaAPCKAZMaOeUbNRMBM0mwRTUcvpnwRICTGjHlGzMSBoQGPQcvpHAVJ2cdCn8n8CCSNo2AyazYCpqOXUfgEsIGgQNEDQQLygfxDAAoKGwaBP5n8ABhA0bAUtJ78XwAqCBkEDBA3ECXqfAFYQNAgaUBz0dwJYkcmJ/AIwgqBB0IDioL8VwAqCBkEDBA3ECXqvAFYQNIwF/U9+ARhB0LAW9DcCWEHQIGiAoA06t/Pp0rC/bQf9taB3Z3Y8qQbn0TuCdji1dWEyOC+Cdpox/opuJzYtSBbnWPOgj6+bdz7kSxW/pay+QR/fI3VybPUcJ1/YvvtTUqfzrU3QR1fMboor6maf1Y6gDTiyfGbLfF/rdt6lEUEnqGvZ9I65og7xXi2MBv2VWFJEd2jptGB8X+uQM6pm6fwzazE3HFwyJShX1KFnVImgFTmweJL3S1r8FkqMGVUj6IrtXzTxIq7gLr2nUzFmVCnxoHdLqvY9f4uT70vqu78dMWZUKdUmMvk7v0jM3udubooruGaf7WRGGXOqklobyQW959mbWuILrtX3tDMn9IyqEHRJdj9zY9t8YXfyzipmVCWhoL+UFOx66oaO+YIL8e6+5oSeUYUUOkki6CKInQuvD8YXdmozqkDQgYIubF9wXVCu4FKcERNBB4r5QtvmXxuM70ua2oyYlAf9hWi1df6Ebq4YGr+FYmVGLFqb0R30ExPO833lLrynU1ZmxEDQLdoyb7yTKwbfve2yMqNsOoM+ll8os3nu+F75vnJ9PdcKKzPKpq2dPOjPRZtNc8c1xRVDs89qn1HGnDJoa0dl0BsfH9c0XwytvEPDDN+c0DNCI+i+Yn5sbFucMbT5rlZmhJ4TY0ZoBN2LDXPGts0XQyfvbHZOijNCURb0LtFk/ZwxHfOFHeLd1maEoKkfVUGve3RMUK4YmFEOgnZY+8jo4HxfOWaEpSjoz0SLNbNHl8YVAzPC0dJQJn/lF0qUvem+rxwzAgStpCFVQa9+eFQUrhiszChjTjMI2mHVrFHR+GJIbYZvTsy9LCgK+lPRYuWskdG5YogxI/ScGDN6o6UhVUGveGhkJXwxpDbDNyfGHhK0w0czR1TKFx0z+kbQrqBnjKicN4YIc1Kc0aAo6J2ixYczhqvhC5sZbloaUhX0Bw8OV8cVAzMuR9Aeyx8Ypo7vK8eMHpr6yeRofqHI+9OHqeWKgRnDVPWTB/2JaPLe9KGq+b5ydZ6hqR91QXdHff9QJEJbOyqDfve+a5AIgm7SsnyzoJvGbvKgPxaN3rl3CJTT2I3aoAtvTxsCpbQ2ozro7qinDoEymntRH/RbUwdDGd1B/7lDtFt6z2Aoob2VJIIuvHn3IFQshU6SCbrwxpRBqEgqjSQVdGHJlIGILKU+8qC3S2qW3DUQkaTWRpJBF16/cwBKlmIXyQZdeG3yAJQk1SaSDrrh1cn9EUjqLeRBbxMLFk/qjw5Z6MBM0A2v3HE1WmTp/DP5I78whkhbiNnY2ZsMuuHl2/vBw+qZ50FvFeteuq0f/mP9rGsRdMOiiVfVVl3OuFZBX+jF/JCtq+O51jbohhduvdKcOp9nHvQWAawgaBA0oDfoI/kFYEQe9GYBrCBoEDSgOOhNAlhB0CBogKCBGEEXS45sFMACgobBoH/P/wAMIGhYDHqDABYQNAgaIGggXtDrBbAgayw2A2ZiJmjYC7or/yeQsOzSJV3rBEhR5lpsDAga0Bo0UcNUzD1BrxUgJVlfi02CmZgJGuaCJmqYirkn6DUCaJa1uuS3/EFAoazdxebBTMwEDXNB90S9WgANslCLzYSZmIka5mImapiL+f+oVwkQQxZrsdkwE/P5qA/ng4ESZFUtNh9mYr447JUCdCLTtjgUmImZsGEuZMKGyZAvD3uFAIXM2uJQidjs4rCJOPT6F+ca1yvbQ2HGAAAAAElFTkSuQmCC" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="面包工厂" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <style>
+:root {
+  --bg: #fff8f0;
+  --card: #ffffff;
+  --crust: #8c4e1e;
+  --crust-d: #6e3a14;
+  --crust-l: #d2914a;
+  --cream: #fff3e0;
+  --cream-d: #ffe0b2;
+  --text: #3a2a1c;
+  --muted: #9b8472;
+  --line: #f0e3d4;
+  --good: #2e9e6b;
+  --warn: #e0902f;
+  --bad: #d8543c;
+  --shadow: 0 6px 20px rgba(140, 78, 30, 0.10);
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; height: 100%; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior-y: none;
+}
+
+#app { display: flex; flex-direction: column; min-height: 100vh; min-height: 100dvh; }
+
+/* Header */
+.app-header {
+  position: sticky; top: 0; z-index: 20;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: calc(10px + var(--safe-top)) 16px 10px;
+  background: linear-gradient(135deg, var(--crust), var(--crust-d));
+  color: #fff8ee;
+  box-shadow: var(--shadow);
+}
+.app-header__brand { display: flex; align-items: center; gap: 10px; }
+.app-header__logo { font-size: 28px; }
+.app-header__title { font-size: 18px; margin: 0; font-weight: 700; letter-spacing: .5px; }
+.app-header__sub { font-size: 12px; margin: 2px 0 0; opacity: .8; }
+.icon-btn {
+  background: rgba(255,255,255,.15); border: none; color: #fff;
+  width: 38px; height: 38px; border-radius: 12px; font-size: 18px;
+  display: grid; place-items: center; cursor: pointer;
+}
+.icon-btn:active { transform: scale(.94); }
+
+/* View area */
+.view { flex: 1; padding: 16px 16px calc(86px + var(--safe-bottom)); }
+.section-title { font-size: 14px; color: var(--muted); margin: 18px 2px 8px; font-weight: 600; }
+.section-title:first-child { margin-top: 4px; }
+
+/* Cards */
+.card {
+  background: var(--card); border-radius: 16px; padding: 14px;
+  box-shadow: var(--shadow); border: 1px solid var(--line);
+}
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+/* Stat tiles */
+.stat { display: flex; flex-direction: column; gap: 4px; }
+.stat__label { font-size: 12px; color: var(--muted); }
+.stat__value { font-size: 22px; font-weight: 800; }
+.stat__hint { font-size: 11px; color: var(--muted); }
+.stat--accent { background: linear-gradient(135deg, var(--cream), var(--cream-d)); border-color: var(--cream-d); }
+
+/* List rows */
+.row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px; background: var(--card); border: 1px solid var(--line);
+  border-radius: 14px; margin-bottom: 10px;
+}
+.row__emoji { font-size: 26px; width: 40px; height: 40px; display: grid; place-items: center;
+  background: var(--cream); border-radius: 12px; flex: none; }
+.row__main { flex: 1; min-width: 0; }
+.row__name { font-weight: 700; font-size: 15px; }
+.row__meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.row__right { text-align: right; flex: none; }
+.row__price { font-weight: 800; }
+
+.badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 999px; font-weight: 700; }
+.badge--good { background: #e3f5ec; color: var(--good); }
+.badge--warn { background: #fdf0db; color: var(--warn); }
+.badge--bad { background: #fce6e1; color: var(--bad); }
+
+/* Buttons */
+.btn {
+  appearance: none; border: none; border-radius: 12px; font-weight: 700; font-size: 15px;
+  padding: 12px 16px; cursor: pointer; display: inline-flex; align-items: center;
+  justify-content: center; gap: 6px;
+}
+.btn:active { transform: scale(.97); }
+.btn--primary { background: linear-gradient(135deg, var(--crust), var(--crust-d)); color: #fff; }
+.btn--soft { background: var(--cream); color: var(--crust-d); }
+.btn--ghost { background: transparent; color: var(--muted); }
+.btn--danger { background: #fce6e1; color: var(--bad); }
+.btn--block { width: 100%; }
+.btn--sm { padding: 8px 12px; font-size: 13px; border-radius: 10px; }
+
+.fab {
+  position: fixed; right: 18px; bottom: calc(96px + var(--safe-bottom)); z-index: 30;
+  width: 56px; height: 56px; border-radius: 50%; font-size: 28px; color: #fff;
+  background: linear-gradient(135deg, var(--crust-l), var(--crust)); border: none;
+  box-shadow: 0 8px 22px rgba(140,78,30,.35); cursor: pointer;
+}
+.fab:active { transform: scale(.92); }
+
+/* Tabbar */
+.tabbar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 25;
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  background: rgba(255,255,255,.92); backdrop-filter: blur(10px);
+  border-top: 1px solid var(--line);
+  padding: 6px 4px calc(6px + var(--safe-bottom));
+}
+.tabbar__item {
+  background: none; border: none; cursor: pointer; color: var(--muted);
+  font-size: 11px; display: flex; flex-direction: column; align-items: center; gap: 2px;
+  padding: 4px 0; border-radius: 10px; transition: color .15s;
+}
+.tabbar__ico { font-size: 20px; }
+.tabbar__item.is-active { color: var(--crust); font-weight: 700; }
+.tabbar__item.is-active .tabbar__ico { transform: translateY(-1px); }
+
+/* Forms */
+.field { margin-bottom: 12px; }
+.field label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; font-weight: 600; }
+.field input, .field select, .field textarea {
+  width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 12px;
+  font-size: 16px; background: #fffdfa; color: var(--text); font-family: inherit;
+}
+.field input:focus, .field select:focus { outline: 2px solid var(--cream-d); border-color: var(--crust-l); }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.emoji-picker { display: flex; flex-wrap: wrap; gap: 8px; }
+.emoji-picker button {
+  font-size: 22px; width: 44px; height: 44px; border-radius: 12px; border: 1px solid var(--line);
+  background: #fff; cursor: pointer;
+}
+.emoji-picker button.is-active { background: var(--cream); border-color: var(--crust-l); }
+
+/* Modal */
+.modal-backdrop {
+  position: fixed; inset: 0; background: rgba(58,42,28,.45); z-index: 40;
+  display: flex; align-items: flex-end; animation: fade .2s ease;
+}
+.modal {
+  background: var(--bg); width: 100%; border-radius: 20px 20px 0 0;
+  padding: 18px 18px calc(18px + var(--safe-bottom)); max-height: 88vh; overflow-y: auto;
+  animation: slideUp .25s cubic-bezier(.2,.8,.2,1);
+}
+.modal__title { font-size: 18px; font-weight: 800; margin: 0 0 14px; }
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+
+/* POS */
+.pos-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.pos-item {
+  background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 12px;
+  text-align: left; cursor: pointer; position: relative;
+}
+.pos-item:active { transform: scale(.97); }
+.pos-item__emoji { font-size: 26px; }
+.pos-item__name { font-weight: 700; font-size: 14px; margin-top: 4px; }
+.pos-item__price { color: var(--crust); font-weight: 800; font-size: 14px; }
+.pos-item__stock { font-size: 11px; color: var(--muted); }
+.pos-item.is-out { opacity: .45; pointer-events: none; }
+.pos-qty {
+  position: absolute; top: -6px; right: -6px; background: var(--crust); color: #fff;
+  min-width: 22px; height: 22px; border-radius: 999px; font-size: 12px; font-weight: 800;
+  display: grid; place-items: center; padding: 0 6px;
+}
+.cart-bar {
+  position: fixed; left: 12px; right: 12px; bottom: calc(80px + var(--safe-bottom)); z-index: 28;
+  background: linear-gradient(135deg, var(--crust), var(--crust-d)); color: #fff;
+  border-radius: 16px; padding: 12px 14px; display: flex; align-items: center;
+  justify-content: space-between; box-shadow: 0 8px 22px rgba(140,78,30,.35);
+}
+.cart-bar__total { font-size: 18px; font-weight: 800; }
+.cart-bar__sub { font-size: 11px; opacity: .85; }
+
+.cart-line { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+.cart-line__name { flex: 1; font-weight: 600; }
+.stepper { display: flex; align-items: center; gap: 8px; }
+.stepper button { width: 32px; height: 32px; border-radius: 10px; border: 1px solid var(--line);
+  background: #fff; font-size: 18px; cursor: pointer; }
+.stepper span { min-width: 22px; text-align: center; font-weight: 700; }
+
+/* Bars (reports) */
+.bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.bar-row__label { width: 64px; font-size: 12px; color: var(--muted); flex: none; }
+.bar-track { flex: 1; background: var(--line); border-radius: 8px; height: 22px; overflow: hidden; }
+.bar-fill { height: 100%; background: linear-gradient(90deg, var(--crust-l), var(--crust));
+  border-radius: 8px; min-width: 2px; transition: width .4s; }
+.bar-row__val { width: 64px; text-align: right; font-size: 12px; font-weight: 700; flex: none; }
+
+/* Empty state */
+.empty { text-align: center; color: var(--muted); padding: 48px 16px; }
+.empty__emoji { font-size: 48px; }
+.empty__text { margin-top: 10px; font-size: 14px; }
+
+/* Toast */
+.toast {
+  position: fixed; left: 50%; bottom: calc(110px + var(--safe-bottom)); transform: translateX(-50%) translateY(20px);
+  background: var(--text); color: #fff; padding: 10px 18px; border-radius: 999px; font-size: 14px;
+  opacity: 0; pointer-events: none; transition: all .25s; z-index: 60; max-width: 86vw; text-align: center;
+}
+.toast.is-show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+.muted { color: var(--muted); }
+.right { text-align: right; }
+.mt8 { margin-top: 8px; } .mt12 { margin-top: 12px; } .mt16 { margin-top: 16px; }
+.divider { height: 1px; background: var(--line); margin: 12px 0; }
+
+</style>
+</head>
+<body>
+  <div id="app">
+    <header class="app-header">
+      <div class="app-header__brand">
+        <span class="app-header__logo">🥖</span>
+        <div>
+          <h1 id="shopName" class="app-header__title">面包工厂</h1>
+          <p id="shopDate" class="app-header__sub"></p>
+        </div>
+      </div>
+      <button id="settingsBtn" class="icon-btn" aria-label="设置">⚙️</button>
+    </header>
+
+    <main id="view" class="view"><!-- 当前页面渲染处 --></main>
+
+    <nav class="tabbar" role="tablist">
+      <button class="tabbar__item" data-tab="dashboard"><span class="tabbar__ico">📊</span><span>仪表盘</span></button>
+      <button class="tabbar__item" data-tab="pos"><span class="tabbar__ico">🧾</span><span>收银</span></button>
+      <button class="tabbar__item" data-tab="products"><span class="tabbar__ico">🥐</span><span>产品</span></button>
+      <button class="tabbar__item" data-tab="inventory"><span class="tabbar__ico">📦</span><span>库存</span></button>
+      <button class="tabbar__item" data-tab="reports"><span class="tabbar__ico">📈</span><span>报表</span></button>
+    </nav>
+  </div>
+
+  <!-- 通用弹层 -->
+  <div id="modalRoot"></div>
+  <div id="toast" class="toast" aria-live="polite"></div>
+
+  <script>
+/* 面包工厂 · 面包店经营管理 App
+ * 纯前端单页应用，数据保存在浏览器 localStorage，可离线使用。 */
+(function () {
+  "use strict";
+
+  // 防点击劫持：若本页被嵌入到别的网站的 iframe 中，立即跳出/隐藏
+  try { if (window.top !== window.self) { window.top.location = window.self.location; } }
+  catch (e) { document.documentElement.style.display = "none"; }
+
+  const STORE_KEY = "breadfactory.v1";
+  const BREAD_EMOJIS = ["🥖", "🥐", "🍞", "🥯", "🥨", "🧇", "🍰", "🧁", "🍪", "🥧", "🍩", "🥞"];
+
+  /* ---------- 状态与持久化 ---------- */
+  const defaultState = () => ({
+    shopName: "面包工厂",
+    currency: "¥",
+    products: [],
+    orders: [],
+    seeded: false,
+  });
+
+  let state = load();
+  let activeTab = "dashboard";
+  let cart = {}; // productId -> qty
+
+  function load() {
+    try {
+      const raw = localStorage.getItem(STORE_KEY);
+      if (raw) return sanitizeState(raw);
+    } catch (e) { /* ignore */ }
+    return defaultState();
+  }
+  function save() {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
+    catch (e) { toast("保存失败：存储空间可能已满"); }
+  }
+
+  /* 安全校验：把任何来源（localStorage / 导入备份）的数据重建成干净对象。
+     只复制已知字段、强制类型、白名单 emoji，从根上杜绝 XSS / 原型污染 / 类型混淆。 */
+  function num(v, min) { const n = Number(v); return Number.isFinite(n) ? Math.max(min, n) : min; }
+  function str(v, max, fallback) { return typeof v === "string" ? v.slice(0, max) : (fallback || ""); }
+  function safeEmoji(e) { return BREAD_EMOJIS.indexOf(e) >= 0 ? e : "🥖"; }
+  function sanitizeProduct(p) {
+    if (!p || typeof p !== "object") return null;
+    return {
+      id: str(p.id, 40) || uid(),
+      name: str(p.name, 60, "未命名"),
+      emoji: safeEmoji(p.emoji),
+      category: str(p.category, 30, "其他"),
+      price: num(p.price, 0), cost: num(p.cost, 0),
+      stock: Math.floor(num(p.stock, 0)), low: Math.floor(num(p.low, 0)),
+    };
+  }
+  function sanitizeOrder(o) {
+    if (!o || typeof o !== "object" || !Array.isArray(o.items)) return null;
+    const items = o.items.map((i) => (i && typeof i === "object") ? {
+      productId: str(i.productId, 40), name: str(i.name, 60), emoji: safeEmoji(i.emoji),
+      price: num(i.price, 0), cost: num(i.cost, 0), qty: Math.floor(num(i.qty, 0)),
+    } : null).filter(Boolean);
+    const total = num(o.total, 0), cost = num(o.cost, 0);
+    return { id: str(o.id, 40) || uid(), items, total, cost,
+      profit: Number.isFinite(Number(o.profit)) ? Number(o.profit) : total - cost,
+      createdAt: str(o.createdAt, 40) || new Date().toISOString() };
+  }
+  function sanitizeState(raw) {
+    let obj;
+    try { obj = typeof raw === "string" ? JSON.parse(raw) : raw; } catch (e) { return defaultState(); }
+    if (!obj || typeof obj !== "object") return defaultState();
+    const s = defaultState();
+    s.shopName = str(obj.shopName, 40) || s.shopName;
+    s.currency = str(obj.currency, 3) || s.currency;
+    s.seeded = !!obj.seeded;
+    s.products = Array.isArray(obj.products) ? obj.products.map(sanitizeProduct).filter(Boolean) : [];
+    s.orders = Array.isArray(obj.orders) ? obj.orders.map(sanitizeOrder).filter(Boolean) : [];
+    return s;
+  }
+
+  function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+  const money = (n) => state.currency + (Math.round(n * 100) / 100).toLocaleString("zh-CN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const todayKey = (d = new Date()) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+
+  /* ---------- 示例数据 ---------- */
+  function seedDemo() {
+    state.products = [
+      { id: uid(), name: "法式长棍", emoji: "🥖", category: "面包", price: 12, cost: 4.5, stock: 24, low: 8 },
+      { id: uid(), name: "牛角可颂", emoji: "🥐", category: "面包", price: 9, cost: 3.2, stock: 30, low: 10 },
+      { id: uid(), name: "吐司面包", emoji: "🍞", category: "面包", price: 15, cost: 5, stock: 18, low: 6 },
+      { id: uid(), name: "贝果", emoji: "🥯", category: "面包", price: 10, cost: 3.5, stock: 5, low: 8 },
+      { id: uid(), name: "草莓蛋糕", emoji: "🍰", category: "蛋糕", price: 28, cost: 11, stock: 9, low: 4 },
+      { id: uid(), name: "杯子蛋糕", emoji: "🧁", category: "蛋糕", price: 14, cost: 5, stock: 16, low: 6 },
+      { id: uid(), name: "曲奇饼干", emoji: "🍪", category: "饼干", price: 6, cost: 1.8, stock: 40, low: 12 },
+      { id: uid(), name: "甜甜圈", emoji: "🍩", category: "甜点", price: 8, cost: 2.6, stock: 3, low: 6 },
+    ];
+    // 造几单历史订单（今天 + 前几天）用于报表演示
+    const now = new Date();
+    const mkOrder = (daysAgo, picks) => {
+      const d = new Date(now); d.setDate(d.getDate() - daysAgo);
+      const items = picks.map(([idx, qty]) => {
+        const p = state.products[idx];
+        return { productId: p.id, name: p.name, emoji: p.emoji, price: p.price, cost: p.cost, qty };
+      });
+      const total = items.reduce((s, i) => s + i.price * i.qty, 0);
+      const cost = items.reduce((s, i) => s + i.cost * i.qty, 0);
+      return { id: uid(), items, total, cost, profit: total - cost, createdAt: d.toISOString() };
+    };
+    state.orders = [
+      mkOrder(0, [[0, 3], [1, 2], [6, 4]]),
+      mkOrder(0, [[4, 1], [5, 2]]),
+      mkOrder(1, [[2, 2], [0, 1], [7, 3]]),
+      mkOrder(1, [[1, 4], [6, 6]]),
+      mkOrder(2, [[4, 2], [3, 2]]),
+      mkOrder(3, [[0, 5], [2, 3], [5, 2]]),
+      mkOrder(4, [[6, 10], [1, 3]]),
+      mkOrder(5, [[3, 4], [7, 5]]),
+    ];
+    state.seeded = true;
+    save();
+  }
+
+  /* ---------- 通用 UI 辅助 ---------- */
+  function toast(msg) {
+    const el = document.getElementById("toast");
+    el.textContent = msg;
+    el.classList.add("is-show");
+    clearTimeout(el._t);
+    el._t = setTimeout(() => el.classList.remove("is-show"), 1800);
+  }
+
+  function openModal(title, bodyHTML, onMount) {
+    const root = document.getElementById("modalRoot");
+    root.innerHTML = `
+      <div class="modal-backdrop">
+        <div class="modal" role="dialog" aria-modal="true">
+          <h3 class="modal__title">${title}</h3>
+          <div id="modalBody">${bodyHTML}</div>
+        </div>
+      </div>`;
+    const backdrop = root.querySelector(".modal-backdrop");
+    backdrop.addEventListener("click", (e) => { if (e.target === backdrop) closeModal(); });
+    if (onMount) onMount(root.querySelector("#modalBody"));
+  }
+  function closeModal() { document.getElementById("modalRoot").innerHTML = ""; }
+
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+  /* ---------- 数据计算 ---------- */
+  function ordersOn(dayKey) { return state.orders.filter((o) => todayKey(new Date(o.createdAt)) === dayKey); }
+  function sum(arr, f) { return arr.reduce((s, x) => s + f(x), 0); }
+
+  function productStats() {
+    const map = {};
+    state.orders.forEach((o) => o.items.forEach((i) => {
+      const m = map[i.productId] || (map[i.productId] = { name: i.name, emoji: i.emoji, qty: 0, revenue: 0 });
+      m.qty += i.qty; m.revenue += i.price * i.qty;
+    }));
+    return Object.values(map).sort((a, b) => b.qty - a.qty);
+  }
+
+  /* ---------- 各页面渲染 ---------- */
+  function renderDashboard() {
+    const t = todayKey();
+    const today = ordersOn(t);
+    const revenue = sum(today, (o) => o.total);
+    const profit = sum(today, (o) => o.profit);
+    const items = sum(today, (o) => sum(o.items, (i) => i.qty));
+    const lowStock = state.products.filter((p) => p.stock <= p.low);
+    const top = productStats().slice(0, 3);
+
+    return `
+      <h2 class="section-title">今日经营（${t}）</h2>
+      <div class="grid2">
+        <div class="card stat stat--accent"><span class="stat__label">今日营业额</span><span class="stat__value">${money(revenue)}</span><span class="stat__hint">${today.length} 笔订单</span></div>
+        <div class="card stat"><span class="stat__label">今日毛利</span><span class="stat__value">${money(profit)}</span><span class="stat__hint">已售 ${items} 件</span></div>
+      </div>
+      <div class="grid2 mt12">
+        <div class="card stat"><span class="stat__label">产品种类</span><span class="stat__value">${state.products.length}</span><span class="stat__hint">在售单品</span></div>
+        <div class="card stat"><span class="stat__label">库存预警</span><span class="stat__value" style="color:${lowStock.length ? "var(--bad)" : "var(--good)"}">${lowStock.length}</span><span class="stat__hint">需补货</span></div>
+      </div>
+
+      <h2 class="section-title">快捷操作</h2>
+      <div class="grid2">
+        <button class="btn btn--primary" data-go="pos">🧾 去收银</button>
+        <button class="btn btn--soft" data-action="add-product">➕ 新增产品</button>
+      </div>
+
+      ${lowStock.length ? `
+      <h2 class="section-title">⚠️ 补货提醒</h2>
+      ${lowStock.map((p) => `
+        <div class="row">
+          <div class="row__emoji">${esc(p.emoji)}</div>
+          <div class="row__main"><div class="row__name">${esc(p.name)}</div><div class="row__meta">仅剩 ${p.stock} 件 · 预警线 ${p.low}</div></div>
+          <div class="row__right"><button class="btn btn--sm btn--soft" data-restock="${p.id}">补货</button></div>
+        </div>`).join("")}` : ""}
+
+      <h2 class="section-title">🔥 热销榜（累计）</h2>
+      ${top.length ? top.map((p, i) => `
+        <div class="row">
+          <div class="row__emoji">${["🥇","🥈","🥉"][i] || "🏅"}</div>
+          <div class="row__main"><div class="row__name">${esc(p.emoji)} ${esc(p.name)}</div><div class="row__meta">累计售出 ${p.qty} 件</div></div>
+          <div class="row__right"><div class="row__price">${money(p.revenue)}</div></div>
+        </div>`).join("") : `<div class="card muted">还没有销售记录，去收银开张吧！</div>`}
+    `;
+  }
+
+  function renderProducts() {
+    if (!state.products.length) {
+      return emptyState("🥐", "还没有产品，点右下角 ➕ 添加你的第一款面包");
+    }
+    const cats = {};
+    state.products.forEach((p) => (cats[p.category] || (cats[p.category] = [])).push(p));
+    let html = "";
+    Object.keys(cats).forEach((c) => {
+      html += `<h2 class="section-title">${esc(c)}</h2>`;
+      html += cats[c].map((p) => {
+        const margin = p.price > 0 ? Math.round((1 - p.cost / p.price) * 100) : 0;
+        return `
+        <div class="row" data-edit="${p.id}">
+          <div class="row__emoji">${esc(p.emoji)}</div>
+          <div class="row__main">
+            <div class="row__name">${esc(p.name)}</div>
+            <div class="row__meta">成本 ${money(p.cost)} · 毛利率 ${margin}% · 库存 ${p.stock}</div>
+          </div>
+          <div class="row__right"><div class="row__price">${money(p.price)}</div>
+            ${p.stock <= p.low ? '<span class="badge badge--bad">缺货</span>' : '<span class="badge badge--good">在售</span>'}
+          </div>
+        </div>`;
+      }).join("");
+    });
+    return html;
+  }
+
+  function renderInventory() {
+    if (!state.products.length) return emptyState("📦", "暂无库存。先到「产品」页新增产品。");
+    const totalStock = sum(state.products, (p) => p.stock);
+    const stockValue = sum(state.products, (p) => p.stock * p.cost);
+    const low = state.products.filter((p) => p.stock <= p.low).length;
+    let html = `
+      <div class="grid2">
+        <div class="card stat stat--accent"><span class="stat__label">库存总量</span><span class="stat__value">${totalStock}</span><span class="stat__hint">件商品</span></div>
+        <div class="card stat"><span class="stat__label">库存成本</span><span class="stat__value">${money(stockValue)}</span><span class="stat__hint">${low} 项预警</span></div>
+      </div>
+      <h2 class="section-title">库存明细（点击调整）</h2>`;
+    html += state.products.slice().sort((a, b) => (a.stock - a.low) - (b.stock - b.low)).map((p) => `
+      <div class="row">
+        <div class="row__emoji">${esc(p.emoji)}</div>
+        <div class="row__main">
+          <div class="row__name">${esc(p.name)}</div>
+          <div class="row__meta">预警线 ${p.low} · 库存成本 ${money(p.stock * p.cost)}</div>
+        </div>
+        <div class="stepper">
+          <button data-stock="${p.id}" data-delta="-1">−</button>
+          <span style="color:${p.stock <= p.low ? "var(--bad)" : "var(--text)"}">${p.stock}</span>
+          <button data-stock="${p.id}" data-delta="1">＋</button>
+          <button class="btn btn--sm btn--soft" data-restock="${p.id}" style="margin-left:6px">补货</button>
+        </div>
+      </div>`).join("");
+    return html;
+  }
+
+  function renderPOS() {
+    if (!state.products.length) return emptyState("🧾", "还没有产品可售，先去「产品」页添加。");
+    let html = `<h2 class="section-title">选择商品下单</h2><div class="pos-grid">`;
+    html += state.products.map((p) => {
+      const out = p.stock <= 0;
+      const q = cart[p.id] || 0;
+      return `
+      <button class="pos-item ${out ? "is-out" : ""}" data-pos="${p.id}">
+        ${q ? `<span class="pos-qty">${q}</span>` : ""}
+        <div class="pos-item__emoji">${esc(p.emoji)}</div>
+        <div class="pos-item__name">${esc(p.name)}</div>
+        <div class="pos-item__price">${money(p.price)}</div>
+        <div class="pos-item__stock">${out ? "已售罄" : "库存 " + p.stock}</div>
+      </button>`;
+    }).join("");
+    html += `</div>`;
+    return html;
+  }
+
+  function renderCartBar() {
+    const root = document.getElementById("modalRoot"); // reuse container? no — use dedicated
+    let bar = document.getElementById("cartBar");
+    const ids = Object.keys(cart).filter((k) => cart[k] > 0);
+    if (activeTab !== "pos" || !ids.length) { if (bar) bar.remove(); return; }
+    const count = ids.reduce((s, k) => s + cart[k], 0);
+    const total = ids.reduce((s, k) => {
+      const p = state.products.find((x) => x.id === k); return s + (p ? p.price * cart[k] : 0);
+    }, 0);
+    if (!bar) {
+      bar = document.createElement("div");
+      bar.id = "cartBar"; bar.className = "cart-bar";
+      document.getElementById("app").appendChild(bar);
+    }
+    bar.innerHTML = `
+      <div><div class="cart-bar__total">${money(total)}</div><div class="cart-bar__sub">${count} 件商品</div></div>
+      <button class="btn" style="background:#fff;color:var(--crust-d)" id="checkoutBtn">结账 →</button>`;
+    bar.querySelector("#checkoutBtn").onclick = openCheckout;
+  }
+
+  function openCheckout() {
+    const ids = Object.keys(cart).filter((k) => cart[k] > 0);
+    if (!ids.length) return;
+    const lines = ids.map((k) => {
+      const p = state.products.find((x) => x.id === k);
+      return `<div class="cart-line">
+        <span>${esc(p.emoji)}</span>
+        <span class="cart-line__name">${esc(p.name)}</span>
+        <div class="stepper">
+          <button data-cart="${k}" data-delta="-1">−</button>
+          <span>${cart[k]}</span>
+          <button data-cart="${k}" data-delta="1">＋</button>
+        </div>
+        <span class="right" style="width:64px;font-weight:700">${money(p.price * cart[k])}</span>
+      </div>`;
+    }).join("");
+    const total = ids.reduce((s, k) => { const p = state.products.find((x) => x.id === k); return s + p.price * cart[k]; }, 0);
+    openModal("确认订单", `
+      ${lines}
+      <div class="cart-line" style="border:none"><span class="cart-line__name" style="font-weight:800">合计</span>
+        <span style="font-size:18px;font-weight:800;color:var(--crust)">${money(total)}</span></div>
+      <button class="btn btn--primary btn--block mt12" id="confirmOrder">✓ 完成收款</button>
+      <button class="btn btn--ghost btn--block mt8" id="cancelCheckout">取消</button>
+    `, (body) => {
+      body.querySelectorAll("[data-cart]").forEach((b) => b.onclick = () => {
+        const id = b.getAttribute("data-cart");
+        adjustCart(id, parseInt(b.getAttribute("data-delta"), 10));
+        if (Object.keys(cart).filter((k) => cart[k] > 0).length) openCheckout(); else closeModal();
+        renderCartBar();
+      });
+      body.querySelector("#confirmOrder").onclick = completeOrder;
+      body.querySelector("#cancelCheckout").onclick = closeModal;
+    });
+  }
+
+  function completeOrder() {
+    const ids = Object.keys(cart).filter((k) => cart[k] > 0);
+    const items = ids.map((k) => {
+      const p = state.products.find((x) => x.id === k);
+      p.stock = Math.max(0, p.stock - cart[k]);
+      return { productId: p.id, name: p.name, emoji: p.emoji, price: p.price, cost: p.cost, qty: cart[k] };
+    });
+    const total = sum(items, (i) => i.price * i.qty);
+    const cost = sum(items, (i) => i.cost * i.qty);
+    state.orders.push({ id: uid(), items, total, cost, profit: total - cost, createdAt: new Date().toISOString() });
+    save();
+    cart = {};
+    closeModal();
+    toast("收款成功 " + money(total));
+    render();
+  }
+
+  function adjustCart(id, delta) {
+    const p = state.products.find((x) => x.id === id);
+    if (!p) return;
+    const next = (cart[id] || 0) + delta;
+    if (next <= 0) { delete cart[id]; return; }
+    if (next > p.stock) { toast("库存不足，仅剩 " + p.stock); return; }
+    cart[id] = next;
+  }
+
+  function renderReports() {
+    if (!state.orders.length) return emptyState("📈", "还没有销售数据，完成订单后这里会生成报表。");
+    // 近 7 天营业额
+    const days = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(); d.setDate(d.getDate() - i);
+      const k = todayKey(d);
+      const os = ordersOn(k);
+      days.push({ key: k, label: `${d.getMonth() + 1}/${d.getDate()}`, revenue: sum(os, (o) => o.total), profit: sum(os, (o) => o.profit) });
+    }
+    const maxRev = Math.max(1, ...days.map((d) => d.revenue));
+    const totalRev = sum(state.orders, (o) => o.total);
+    const totalProfit = sum(state.orders, (o) => o.profit);
+    const avg = totalRev / state.orders.length;
+    const top = productStats().slice(0, 5);
+    const maxQty = Math.max(1, ...top.map((p) => p.qty));
+
+    let html = `
+      <div class="grid2">
+        <div class="card stat stat--accent"><span class="stat__label">累计营业额</span><span class="stat__value">${money(totalRev)}</span><span class="stat__hint">${state.orders.length} 笔订单</span></div>
+        <div class="card stat"><span class="stat__label">累计毛利</span><span class="stat__value">${money(totalProfit)}</span><span class="stat__hint">客单价 ${money(avg)}</span></div>
+      </div>
+      <h2 class="section-title">近 7 天营业额</h2>
+      <div class="card">
+        ${days.map((d) => `
+          <div class="bar-row">
+            <div class="bar-row__label">${d.label}</div>
+            <div class="bar-track"><div class="bar-fill" style="width:${Math.round(d.revenue / maxRev * 100)}%"></div></div>
+            <div class="bar-row__val">${d.revenue ? money(d.revenue) : "—"}</div>
+          </div>`).join("")}
+      </div>
+      <h2 class="section-title">畅销商品 Top 5</h2>
+      <div class="card">
+        ${top.map((p) => `
+          <div class="bar-row">
+            <div class="bar-row__label">${esc(p.emoji)} ${esc(p.name)}</div>
+            <div class="bar-track"><div class="bar-fill" style="width:${Math.round(p.qty / maxQty * 100)}%"></div></div>
+            <div class="bar-row__val">${p.qty} 件</div>
+          </div>`).join("")}
+      </div>`;
+    return html;
+  }
+
+  function emptyState(emoji, text) {
+    return `<div class="empty"><div class="empty__emoji">${emoji}</div><div class="empty__text">${text}</div></div>`;
+  }
+
+  /* ---------- 产品表单 ---------- */
+  function productForm(existing) {
+    const p = existing || { name: "", emoji: "🥖", category: "面包", price: "", cost: "", stock: 0, low: 8 };
+    const body = `
+      <div class="field"><label>名称</label><input id="pName" value="${esc(p.name)}" placeholder="如：法式长棍" /></div>
+      <div class="field"><label>图标</label><div class="emoji-picker" id="pEmoji">
+        ${BREAD_EMOJIS.map((e) => `<button type="button" data-e="${e}" class="${e === p.emoji ? "is-active" : ""}">${e}</button>`).join("")}
+      </div></div>
+      <div class="field"><label>分类</label>
+        <input id="pCategory" value="${esc(p.category)}" list="catList" placeholder="面包 / 蛋糕 / 饼干..." />
+        <datalist id="catList">${[...new Set(state.products.map((x) => x.category))].map((c) => `<option value="${esc(c)}">`).join("")}</datalist>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>售价 (${state.currency})</label><input id="pPrice" type="number" inputmode="decimal" step="0.5" value="${p.price}" placeholder="0.00" /></div>
+        <div class="field"><label>成本 (${state.currency})</label><input id="pCost" type="number" inputmode="decimal" step="0.5" value="${p.cost}" placeholder="0.00" /></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>当前库存</label><input id="pStock" type="number" inputmode="numeric" value="${p.stock}" /></div>
+        <div class="field"><label>预警库存</label><input id="pLow" type="number" inputmode="numeric" value="${p.low}" /></div>
+      </div>
+      <button class="btn btn--primary btn--block mt8" id="saveProduct">保存</button>
+      ${existing ? `<button class="btn btn--danger btn--block mt8" id="delProduct">删除该产品</button>` : ""}
+      <button class="btn btn--ghost btn--block mt8" id="cancelProduct">取消</button>
+    `;
+    openModal(existing ? "编辑产品" : "新增产品", body, (root) => {
+      let emoji = p.emoji;
+      root.querySelectorAll("#pEmoji button").forEach((b) => b.onclick = () => {
+        emoji = b.getAttribute("data-e");
+        root.querySelectorAll("#pEmoji button").forEach((x) => x.classList.remove("is-active"));
+        b.classList.add("is-active");
+      });
+      root.querySelector("#saveProduct").onclick = () => {
+        const name = root.querySelector("#pName").value.trim();
+        const price = parseFloat(root.querySelector("#pPrice").value) || 0;
+        const cost = parseFloat(root.querySelector("#pCost").value) || 0;
+        const stock = parseInt(root.querySelector("#pStock").value, 10) || 0;
+        const low = parseInt(root.querySelector("#pLow").value, 10) || 0;
+        const category = root.querySelector("#pCategory").value.trim() || "其他";
+        if (!name) { toast("请填写产品名称"); return; }
+        if (existing) {
+          Object.assign(existing, { name, emoji, category, price, cost, stock, low });
+        } else {
+          state.products.push({ id: uid(), name, emoji, category, price, cost, stock, low });
+        }
+        save(); closeModal(); render(); toast("已保存");
+      };
+      if (existing) root.querySelector("#delProduct").onclick = () => {
+        state.products = state.products.filter((x) => x.id !== existing.id);
+        save(); closeModal(); render(); toast("已删除");
+      };
+      root.querySelector("#cancelProduct").onclick = closeModal;
+    });
+  }
+
+  function restockForm(id) {
+    const p = state.products.find((x) => x.id === id);
+    if (!p) return;
+    openModal(`补货 · ${esc(p.name)}`, `
+      <div class="field"><label>当前库存：${p.stock} 件，补货数量</label>
+        <input id="rAmount" type="number" inputmode="numeric" value="20" /></div>
+      <button class="btn btn--primary btn--block" id="doRestock">确认补货</button>
+      <button class="btn btn--ghost btn--block mt8" id="cancelRestock">取消</button>
+    `, (root) => {
+      root.querySelector("#doRestock").onclick = () => {
+        const n = parseInt(root.querySelector("#rAmount").value, 10) || 0;
+        p.stock += n; save(); closeModal(); render(); toast(`已补货 ${n} 件`);
+      };
+      root.querySelector("#cancelRestock").onclick = closeModal;
+    });
+  }
+
+  /* ---------- 设置 ---------- */
+  function openSettings() {
+    openModal("设置", `
+      <div class="field"><label>店铺名称</label><input id="sName" value="${esc(state.shopName)}" /></div>
+      <div class="field"><label>货币符号</label><input id="sCur" value="${esc(state.currency)}" maxlength="3" /></div>
+      <button class="btn btn--primary btn--block" id="sSave">保存设置</button>
+      <div class="divider"></div>
+      <button class="btn btn--soft btn--block" id="sSeed">载入示例数据</button>
+      <button class="btn btn--soft btn--block mt8" id="sExport">导出数据备份</button>
+      <button class="btn btn--soft btn--block mt8" id="sImport">导入数据备份</button>
+      <button class="btn btn--danger btn--block mt8" id="sClear">清空全部数据</button>
+      <p class="muted mt12" style="font-size:12px;text-align:center">数据仅保存在本机浏览器中，添加到主屏幕后可离线使用。</p>
+    `, (root) => {
+      root.querySelector("#sSave").onclick = () => {
+        state.shopName = root.querySelector("#sName").value.trim() || "面包工厂";
+        state.currency = root.querySelector("#sCur").value.trim() || "¥";
+        save(); closeModal(); render(); toast("设置已保存");
+      };
+      root.querySelector("#sSeed").onclick = () => {
+        if (confirm("载入示例数据会覆盖现有产品和订单，确定？")) { seedDemo(); closeModal(); render(); toast("已载入示例数据"); }
+      };
+      root.querySelector("#sExport").onclick = () => {
+        const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = `面包工厂备份-${todayKey()}.json`;
+        a.click(); URL.revokeObjectURL(a.href); toast("已导出备份文件");
+      };
+      root.querySelector("#sImport").onclick = () => {
+        const inp = document.createElement("input"); inp.type = "file"; inp.accept = "application/json";
+        inp.onchange = () => {
+          const f = inp.files[0]; if (!f) return;
+          const r = new FileReader();
+          r.onload = () => {
+            try { state = sanitizeState(r.result); save(); closeModal(); render(); toast("导入成功"); }
+            catch (e) { toast("文件格式错误"); }
+          };
+          r.readAsText(f);
+        };
+        inp.click();
+      };
+      root.querySelector("#sClear").onclick = () => {
+        if (confirm("将清空所有产品、库存和订单，且不可恢复。确定？")) {
+          state = defaultState(); save(); closeModal(); render(); toast("已清空");
+        }
+      };
+    });
+  }
+
+  /* ---------- 路由与事件 ---------- */
+  function render() {
+    document.getElementById("shopName").textContent = state.shopName;
+    document.getElementById("shopDate").textContent = new Date().toLocaleDateString("zh-CN", { year: "numeric", month: "long", day: "numeric", weekday: "long" });
+    const view = document.getElementById("view");
+    const map = { dashboard: renderDashboard, pos: renderPOS, products: renderProducts, inventory: renderInventory, reports: renderReports };
+    view.innerHTML = (map[activeTab] || renderDashboard)();
+
+    // FAB（仅产品页）
+    let fab = document.getElementById("fab");
+    if (activeTab === "products") {
+      if (!fab) { fab = document.createElement("button"); fab.id = "fab"; fab.className = "fab"; fab.textContent = "＋";
+        fab.onclick = () => productForm(null); document.getElementById("app").appendChild(fab); }
+    } else if (fab) fab.remove();
+
+    document.querySelectorAll(".tabbar__item").forEach((b) =>
+      b.classList.toggle("is-active", b.getAttribute("data-tab") === activeTab));
+    renderCartBar();
+    window.scrollTo(0, 0);
+  }
+
+  function go(tab) { activeTab = tab; render(); }
+
+  document.addEventListener("click", (e) => {
+    const t = e.target.closest("[data-tab],[data-go],[data-edit],[data-restock],[data-stock],[data-pos],[data-action]");
+    if (!t) return;
+    if (t.dataset.tab) return go(t.dataset.tab);
+    if (t.dataset.go) return go(t.dataset.go);
+    if (t.dataset.action === "add-product") return productForm(null);
+    if (t.dataset.edit) return productForm(state.products.find((p) => p.id === t.dataset.edit));
+    if (t.dataset.restock) return restockForm(t.dataset.restock);
+    if (t.hasAttribute && t.dataset.stock) {
+      const p = state.products.find((x) => x.id === t.dataset.stock);
+      if (p) { p.stock = Math.max(0, p.stock + parseInt(t.dataset.delta, 10)); save(); render(); }
+      return;
+    }
+    if (t.dataset.pos) { adjustCart(t.dataset.pos, 1); render(); return; }
+  });
+
+  document.getElementById("settingsBtn").addEventListener("click", openSettings);
+
+  /* ---------- 启动 ---------- */
+  if (!state.seeded && !state.products.length) seedDemo();
+  render();
+
+  // 注册 Service Worker（离线可用）
+  })();
+
+</script>
+</body>
+</html>
