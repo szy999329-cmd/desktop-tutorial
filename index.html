@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
+  <title>面包工厂 · 面包店经营管理</title>
+  <meta name="description" content="面包店经营管理 App：产品、库存、收银、订单与经营报表。" />
+  <meta name="theme-color" content="#8c4e1e" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" type="image/png" href="assets/icons/favicon.png" />
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="面包工厂" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div id="app">
+    <header class="app-header">
+      <div class="app-header__brand">
+        <span class="app-header__logo">🥖</span>
+        <div>
+          <h1 id="shopName" class="app-header__title">面包工厂</h1>
+          <p id="shopDate" class="app-header__sub"></p>
+        </div>
+      </div>
+      <button id="settingsBtn" class="icon-btn" aria-label="设置">⚙️</button>
+    </header>
+
+    <main id="view" class="view"><!-- 当前页面渲染处 --></main>
+
+    <nav class="tabbar" role="tablist">
+      <button class="tabbar__item" data-tab="dashboard"><span class="tabbar__ico">📊</span><span>仪表盘</span></button>
+      <button class="tabbar__item" data-tab="pos"><span class="tabbar__ico">🧾</span><span>收银</span></button>
+      <button class="tabbar__item" data-tab="products"><span class="tabbar__ico">🥐</span><span>产品</span></button>
+      <button class="tabbar__item" data-tab="inventory"><span class="tabbar__ico">📦</span><span>库存</span></button>
+      <button class="tabbar__item" data-tab="reports"><span class="tabbar__ico">📈</span><span>报表</span></button>
+    </nav>
+  </div>
+
+  <!-- 通用弹层 -->
+  <div id="modalRoot"></div>
+  <div id="toast" class="toast" aria-live="polite"></div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,5 +1,49 @@
-# Welcome to GitHub Desktop!
+# 🥖 面包工厂 · 面包店经营管理 App
 
-This is your README. READMEs are where you can communicate what your project is and how to use it.
+一款手机优先的**面包店经营管理**应用，纯前端 PWA（渐进式网页应用）：在手机浏览器打开后可「添加到主屏幕」，拥有自己的图标、全屏运行、**可离线使用**，数据保存在本机，无需注册、不花一分钱。
 
-Write your name on line 6, save it, and then head back to GitHub Desktop.
+## ✨ 功能
+
+- **📊 仪表盘**：今日营业额、毛利、订单数、库存预警、热销榜。
+- **🧾 收银（POS）**：点选商品下单、自动算总价、一键结账，结账后自动扣减库存并记账。
+- **🥐 产品管理**：新增 / 编辑 / 删除产品，设置售价、成本、分类、图标，自动计算毛利率。
+- **📦 库存管理**：实时增减库存、补货、低库存预警、库存成本统计。
+- **📈 经营报表**：近 7 天营业额柱状图、累计营业额与毛利、客单价、畅销商品 Top 5。
+- **⚙️ 设置**：店铺名称、货币符号、示例数据、数据导出 / 导入备份、清空数据。
+
+## 📱 安装到手机（像 App 一样使用）
+
+1. 用手机浏览器打开本应用网址（见下方「部署」）。
+2. **iPhone（Safari）**：点底部「分享」按钮 → **添加到主屏幕**。
+3. **Android（Chrome）**：点右上角「⋮」菜单 → **安装应用 / 添加到主屏幕**。
+4. 桌面图标即生成，点开即全屏运行，断网也能用。
+
+## 🚀 部署（生成手机可访问的网址）
+
+本仓库已内置 GitHub Pages 自动部署工作流。只需在仓库里启用一次 Pages：
+
+1. 打开仓库 **Settings → Pages**。
+2. **Build and deployment → Source** 选择 **GitHub Actions**。
+3. 之后每次推送，`Deploy to GitHub Pages` 工作流会自动发布。
+4. 网址形如：`https://<用户名>.github.io/desktop-tutorial/`。
+
+> 也可选择 **Settings → Pages → Deploy from a branch**，选本分支、目录 `/ (root)`，同样可发布。
+
+## 🧰 本地预览
+
+无需任何依赖，用任意静态服务器即可：
+
+```bash
+python3 -m http.server 8099
+# 浏览器打开 http://localhost:8099
+```
+
+## 📦 关于上架 App Store / 应用商店
+
+本项目是网页 App（PWA），无需上架即可安装使用。若日后需要上架 **Apple App Store / Google Play**，需自备苹果 / 谷歌开发者账号，并用 [Capacitor](https://capacitorjs.com/) 等工具把本站点打包为原生壳应用后提交审核——届时本仓库的网页代码可直接复用。
+
+## 🗂 技术说明
+
+- 纯原生 HTML / CSS / JavaScript，无构建步骤、无外部依赖。
+- 数据持久化：`localStorage`。
+- 离线支持：Service Worker（`sw.js`）+ Web App Manifest。
