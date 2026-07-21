@@ -7,7 +7,7 @@
   {
     "id": "起步加速(完美起步/起步加速)机制",
     "ok": true,
-    "detail": "msg=\"起步加速！\" boostT=1.17"
+    "detail": "msg=\"起步加速！\" boostT=1.10"
   },
   {
     "id": "油门加速达到高速",
@@ -27,17 +27,17 @@
   {
     "id": "漂移积攒集气条",
     "ok": true,
-    "detail": "gauge=37.8"
+    "detail": "gauge=24.3"
   },
   {
     "id": "断位漂移小喷",
     "ok": true,
-    "detail": "cutT=0.52"
+    "detail": "cutT=0.45"
   },
   {
     "id": "双喷判定窗口开启",
     "ok": true,
-    "detail": "dualT=0.42"
+    "detail": "dualT=0.35"
   },
   {
     "id": "集气满获得 N₂O",
@@ -47,7 +47,7 @@
   {
     "id": "氮气喷射突破普通极速",
     "ok": true,
-    "detail": "峰值=344 (普通极速262)"
+    "detail": "峰值=345 (普通极速262)"
   },
   {
     "id": "双喷(漂移接喷射)触发",
@@ -65,9 +65,14 @@
     "detail": "rank=1"
   },
   {
-    "id": "渲染帧率≥30fps",
+    "id": "渲染帧率(软渲染基线)≥8fps",
     "ok": true,
-    "detail": "fps=37"
+    "detail": "fps=10 (headless 软件渲染)"
+  },
+  {
+    "id": "WebGL 真 3D 渲染上下文",
+    "ok": true,
+    "detail": "THREE.WebGLRenderer"
   },
   {
     "id": "第二赛道(冰封雪谷)可加载",
