@@ -319,78 +319,222 @@ let circleTex = null, blobTex = null;
 function toonMat(color){
   return new THREE.MeshToonMaterial({ color });
 }
-function buildKartMesh(colorHex){
-  const g = new THREE.Group();
+// ---- 环境反射贴图（程序生成天空+地面，车漆/镀铬反射用） ----
+let envCube = null;
+function makeEnvMap(){
+  const faces = [];
+  for (let i = 0; i < 6; i++){
+    const c = document.createElement("canvas"); c.width = c.height = 64;
+    const x = c.getContext("2d");
+    if (i === 2){            // +Y 天顶
+      x.fillStyle = "#eaf6ff"; x.fillRect(0, 0, 64, 64);
+      x.fillStyle = "#ffffff"; x.beginPath(); x.arc(32, 32, 18, 0, 7); x.fill();
+    } else if (i === 3){     // -Y 地面
+      x.fillStyle = theme ? theme.grass2 : "#4a9a3a"; x.fillRect(0, 0, 64, 64);
+    } else {                 // 侧面：天空渐变 + 地平线
+      const g = x.createLinearGradient(0, 0, 0, 64);
+      g.addColorStop(0, "#bfe4ff"); g.addColorStop(0.62, "#e8f4ff");
+      g.addColorStop(0.66, "#8fb87a"); g.addColorStop(1, "#5a8a4a");
+      x.fillStyle = g; x.fillRect(0, 0, 64, 64);
+      x.fillStyle = "rgba(255,255,255,0.75)";
+      x.beginPath(); x.ellipse(16 + i * 8, 14, 10, 4, 0, 0, 7); x.fill();
+    }
+    faces.push(c);
+  }
+  envCube = new THREE.CubeTexture(faces);
+  envCube.needsUpdate = true;
+}
+// ---- 精致车体材质库（按颜色缓存） ----
+const kartMatCache = new Map();
+function kartMats(colorHex){
+  if (kartMatCache.has(colorHex)) return kartMatCache.get(colorHex);
   const col = new THREE.Color(colorHex);
-  const dark = col.clone().multiplyScalar(0.55);
-  const lite = col.clone().lerp(new THREE.Color(0xffffff), 0.45);
-  // 底盘
-  const chassis = new THREE.Mesh(new THREE.BoxGeometry(21, 2.6, 12), toonMat(0x2c313c));
-  chassis.position.y = 3.4; g.add(chassis);
-  // 圆润车壳（泡泡卡丁车式）
-  const shell = new THREE.Mesh(new THREE.SphereGeometry(8, 18, 14), new THREE.MeshToonMaterial({ color: col }));
-  shell.scale.set(1.55, 0.62, 1.05); shell.position.set(0.5, 6.2, 0); g.add(shell);
-  // 前鼻锥
-  const nose = new THREE.Mesh(new THREE.SphereGeometry(4.6, 14, 10), new THREE.MeshToonMaterial({ color: lite }));
-  nose.scale.set(1.5, 0.55, 0.9); nose.position.set(10.5, 5.4, 0); g.add(nose);
-  // 座舱
-  const pit = new THREE.Mesh(new THREE.CylinderGeometry(4.3, 4.6, 2.4, 14), toonMat(0x232833));
-  pit.position.set(-2.5, 8.0, 0); g.add(pit);
-  // 车手
-  const torso = new THREE.Mesh(new THREE.SphereGeometry(3.1, 12, 10), new THREE.MeshToonMaterial({ color: dark }));
-  torso.scale.set(1, 0.9, 1); torso.position.set(-2.6, 9.2, 0); g.add(torso);
-  const helmet = new THREE.Mesh(new THREE.SphereGeometry(3.3, 14, 12), toonMat(0xf6f8fc));
-  helmet.position.set(-2.4, 12.6, 0); g.add(helmet);
-  const visor = new THREE.Mesh(new THREE.SphereGeometry(2.5, 12, 10), toonMat(0x39bdf5));
-  visor.scale.set(0.72, 0.62, 0.95); visor.position.set(-0.4, 12.4, 0); g.add(visor);
-  const crest = new THREE.Mesh(new THREE.SphereGeometry(1.6, 10, 8), new THREE.MeshToonMaterial({ color: col }));
-  crest.scale.set(1.6, 0.5, 0.5); crest.position.set(-2.4, 15.4, 0); g.add(crest);
-  // 方向盘
-  const wheelSt = new THREE.Mesh(new THREE.TorusGeometry(1.7, 0.45, 8, 14), toonMat(0x3a3f4a));
-  wheelSt.rotation.z = Math.PI / 2 - 0.5; wheelSt.position.set(3.4, 9.2, 0); g.add(wheelSt);
-  // 尾翼
-  const wing = new THREE.Mesh(new THREE.BoxGeometry(3.2, 0.9, 14), new THREE.MeshToonMaterial({ color: col }));
-  wing.position.set(-10.5, 10.6, 0); g.add(wing);
-  for (const s of [-1, 1]){
-    const strut = new THREE.Mesh(new THREE.BoxGeometry(1.0, 3.6, 1.0), toonMat(0x3a3f4a));
-    strut.position.set(-10.5, 8.2, 5 * s); g.add(strut);
-  }
-  // 排气管
-  const exh = [];
-  for (const s of [-1, 1]){
-    const e = new THREE.Mesh(new THREE.CylinderGeometry(1.05, 1.3, 3.6, 10), toonMat(0x767d8c));
-    e.rotation.z = Math.PI / 2 + 0.25; e.position.set(-11.8, 5.2, 3.2 * s); g.add(e);
-    exh.push(e);
-  }
-  // 车轮（前轮可转向）
-  const wheelGeo = new THREE.CylinderGeometry(3.5, 3.5, 2.6, 14);
-  wheelGeo.rotateX(Math.PI / 2);
-  const hubGeo = new THREE.CylinderGeometry(1.5, 1.5, 2.8, 10);
-  hubGeo.rotateX(Math.PI / 2);
-  const wheels = [], fronts = [];
-  const mkWheel = (x, z, front) => {
-    const wg = new THREE.Group(); wg.position.set(x, 3.5, z);
-    const tire = new THREE.Mesh(wheelGeo, toonMat(0x23262e));
-    const hub = new THREE.Mesh(hubGeo, toonMat(0xd8dce4));
-    wg.add(tire); wg.add(hub); g.add(wg);
-    wheels.push(wg); if (front) fronts.push(wg);
+  const M = {
+    paint: new THREE.MeshPhongMaterial({ color: col, shininess: 95, specular: 0xbbccdd,
+      envMap: envCube, reflectivity: 0.22, combine: THREE.MixOperation }),
+    paint2: new THREE.MeshPhongMaterial({ color: col.clone().multiplyScalar(0.62), shininess: 70,
+      specular: 0x667788, envMap: envCube, reflectivity: 0.12, combine: THREE.MixOperation }),
+    carbon: new THREE.MeshPhongMaterial({ color: 0x181c24, shininess: 30, specular: 0x334455 }),
+    chrome: new THREE.MeshPhongMaterial({ color: 0xd8dee8, shininess: 160, specular: 0xffffff,
+      envMap: envCube, reflectivity: 0.85, combine: THREE.MixOperation }),
+    rim: new THREE.MeshPhongMaterial({ color: 0xf2c14e, shininess: 130, specular: 0xffffff,
+      envMap: envCube, reflectivity: 0.25, combine: THREE.MixOperation }),
+    tire: new THREE.MeshPhongMaterial({ color: 0x1c1e24, shininess: 12, specular: 0x222831 }),
+    suit: new THREE.MeshPhongMaterial({ color: 0xf4f6fa, shininess: 45, specular: 0x99aabb }),
+    visor: new THREE.MeshPhongMaterial({ color: 0x2fb9f0, shininess: 150, specular: 0xffffff,
+      envMap: envCube, reflectivity: 0.6, combine: THREE.MixOperation }),
+    lampW: new THREE.MeshBasicMaterial({ color: 0xffffee }),
+    lampR: new THREE.MeshBasicMaterial({ color: 0xff3a2e, transparent: true, opacity: 0.55 }),
+    glow: new THREE.MeshBasicMaterial({ color: 0x4de1ff, transparent: true, opacity: 0.12,
+      blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide }),
+    core: new THREE.MeshBasicMaterial({ color: 0x0a2033 })
   };
-  mkWheel(7.6, -7.6, true); mkWheel(7.6, 7.6, true);
-  mkWheel(-7.8, -7.9, false); mkWheel(-7.8, 7.9, false);
-  // 圆形贴地阴影
-  const shadow = new THREE.Mesh(new THREE.PlaneGeometry(30, 30),
+  kartMatCache.set(colorHex, M);
+  return M;
+}
+function buildKartMesh(colorHex){
+  // 商业级精致车模：金属漆/镀铬/碳纤维 + 氮气变形机构（尾翼展开/侧翼板/鼻锥前移/能量光效）
+  if (!envCube) makeEnvMap();
+  const M = kartMats(colorHex);
+  const g = new THREE.Group();
+  const mesh = (geo, mat, x, y, z) => {
+    const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); g.add(m); return m;
+  };
+  // --- 底盘 / 前铲 / 侧裙 ---
+  mesh(new THREE.BoxGeometry(21, 0.9, 11.6), M.carbon, -0.5, 2.7, 0);
+  mesh(new THREE.BoxGeometry(5.5, 0.6, 12.4), M.carbon, 11.5, 2.5, 0);
+  for (const s of [-1, 1]) mesh(new THREE.BoxGeometry(12, 1.4, 0.9), M.carbon, -1.5, 3.4, 6.0 * s);
+  // --- 主车身单体壳 ---
+  const tub = mesh(new THREE.BoxGeometry(13.5, 3.4, 9.4), M.paint, -1.5, 4.9, 0);
+  // 楔形鼻锥组（变形时前移，露出发光涡轮核心）
+  const noseGrp = new THREE.Group(); g.add(noseGrp);
+  const noseGeo = new THREE.CylinderGeometry(1.25, 4.7, 10, 4, 1);
+  noseGeo.rotateZ(-Math.PI / 2); noseGeo.rotateX(Math.PI / 4);
+  const nose = new THREE.Mesh(noseGeo, M.paint);
+  nose.scale.set(1, 0.52, 1.2); nose.position.set(0, 0, 0); noseGrp.add(nose);
+  const noseTip = new THREE.Mesh(new THREE.SphereGeometry(1.15, 10, 8), M.chrome);
+  noseTip.position.set(5.1, 0.3, 0); noseGrp.add(noseTip);
+  for (const s of [-1, 1]){                                  // 大灯
+    const lamp = new THREE.Mesh(new THREE.SphereGeometry(0.75, 8, 8), M.lampW);
+    lamp.scale.set(0.6, 0.8, 1.4); lamp.position.set(3.4, 0.7, 2.1 * s); noseGrp.add(lamp);
+  }
+  noseGrp.position.set(10.6, 4.9, 0);
+  // 涡轮核心 + 能量环（鼻锥后方，变形时可见）
+  const coreGeo = new THREE.CylinderGeometry(2.1, 2.1, 0.7, 12);
+  coreGeo.rotateZ(Math.PI / 2);
+  const core = mesh(coreGeo, M.core, 7.3, 4.9, 0);
+  for (let i = 0; i < 4; i++){
+    const blade = new THREE.Mesh(new THREE.BoxGeometry(0.3, 3.4, 0.9), M.chrome);
+    blade.rotation.x = i * Math.PI / 4; core.add(blade);
+  }
+  const coreRingGeo = new THREE.TorusGeometry(2.5, 0.38, 8, 20);
+  coreRingGeo.rotateY(Math.PI / 2);
+  const coreRing = mesh(coreRingGeo, M.glow.clone(), 7.6, 4.9, 0);
+  // 侧箱 + 进气口 + 能量灯带
+  const strips = [coreRing];
+  for (const s of [-1, 1]){
+    mesh(new THREE.BoxGeometry(10, 2.6, 3.1), M.paint2, -1, 4.6, 5.6 * s);
+    mesh(new THREE.BoxGeometry(1.2, 1.7, 2.2), M.carbon, 4.1, 4.6, 5.7 * s);
+    const st = mesh(new THREE.BoxGeometry(9.4, 0.42, 0.34), M.glow.clone(), -1, 6.05, 7.15 * s);
+    strips.push(st);
+    const st2 = mesh(new THREE.BoxGeometry(0.4, 0.42, 8.6), M.glow.clone(), 8.6, 3.4, 0);
+    strips.push(st2);
+  }
+  // 驾驶舱 / 座椅 / 引擎盖
+  mesh(new THREE.CylinderGeometry(3.9, 4.3, 1.6, 14), M.carbon, -2.3, 7.0, 0);
+  const seat = mesh(new THREE.BoxGeometry(2.2, 4.4, 4.6), M.paint2, -5.6, 8.0, 0);
+  seat.rotation.z = 0.18;
+  const cowlGeo = new THREE.SphereGeometry(4.2, 14, 10, 0, Math.PI * 2, 0, Math.PI / 2);
+  const cowl = mesh(cowlGeo, M.paint, -8.2, 6.4, 0);
+  cowl.scale.set(1.25, 1.1, 1.05);
+  const finGeo = new THREE.CylinderGeometry(0.5, 2.6, 4.6, 3, 1);
+  finGeo.rotateZ(-Math.PI / 2);
+  const fin = mesh(finGeo, M.paint2, -8.4, 9.4, 0); fin.scale.set(1, 0.9, 0.28);
+  // 方向盘
+  const swGeo = new THREE.TorusGeometry(1.5, 0.34, 8, 14);
+  const sw = mesh(swGeo, M.carbon, 2.6, 8.6, 0);
+  sw.rotation.y = Math.PI / 2; sw.rotation.z = 0.5;
+  // --- 车手（赛车服 + 精致头盔） ---
+  const torso = mesh(new THREE.CylinderGeometry(2.0, 2.7, 3.6, 12), M.suit, -2.8, 9.0, 0);
+  for (const s of [-1, 1]) mesh(new THREE.SphereGeometry(1.05, 8, 8), M.paint, -2.6, 10.3, 2.2 * s);
+  const helmet = mesh(new THREE.SphereGeometry(2.9, 16, 13), M.suit, -2.5, 12.9, 0);
+  helmet.scale.set(1.05, 1, 1);
+  const visGeo = new THREE.SphereGeometry(2.55, 14, 10, -Math.PI / 2, Math.PI);
+  const vis = mesh(visGeo, M.visor, -2.2, 12.9, 0);
+  vis.rotation.y = Math.PI / 2; vis.scale.set(1.02, 0.82, 1.02);
+  const crest = mesh(new THREE.BoxGeometry(3.6, 0.7, 0.5), M.paint, -2.7, 15.4, 0);
+  crest.rotation.z = -0.12;
+  // --- 双层尾翼（上层为变形组：喷射时抬升展开） ---
+  mesh(new THREE.BoxGeometry(3.0, 0.45, 12.5), M.paint2, -10.2, 8.3, 0).rotation.z = 0.10;
+  const wingGrp = new THREE.Group();
+  const wing = new THREE.Mesh(new THREE.BoxGeometry(3.6, 0.5, 15), M.paint);
+  wing.rotation.z = 0.16; wingGrp.add(wing);
+  for (const s of [-1, 1]){
+    const ep = new THREE.Mesh(new THREE.BoxGeometry(3.8, 3.0, 0.45), M.paint2);
+    ep.position.set(0, -0.4, 7.5 * s); wingGrp.add(ep);
+    const strut = new THREE.Mesh(new THREE.BoxGeometry(0.7, 3.6, 0.7), M.chrome);
+    strut.position.set(0.4, -2.2, 4.6 * s); wingGrp.add(strut);
+  }
+  const wingStrip = new THREE.Mesh(new THREE.BoxGeometry(3.7, 0.3, 14.6), M.glow.clone());
+  wingStrip.rotation.z = 0.16; wingStrip.position.y = 0.45; wingGrp.add(wingStrip);
+  strips.push(wingStrip);
+  wingGrp.position.set(-10.4, 10.4, 0); g.add(wingGrp);
+  // --- 侧翼板（变形时向外张开的空力板） ---
+  const flaps = [];
+  for (const s of [-1, 1]){
+    const fg = new THREE.Group(); fg.position.set(-5.2, 5.6, 6.2 * s);
+    const fp = new THREE.Mesh(new THREE.BoxGeometry(4.6, 2.0, 0.4), M.paint);
+    fp.position.x = -2.0; fg.add(fp);
+    const fs = new THREE.Mesh(new THREE.BoxGeometry(4.4, 0.35, 0.42), M.glow.clone());
+    fs.position.set(-2.0, 1.0, 0); fg.add(fs);
+    strips.push(fs);
+    fg.userData.side = s; g.add(fg); flaps.push(fg);
+  }
+  // --- 排气管（镀铬双管，变形时伸长） ---
+  const exhTips = [];
+  for (const s of [-1, 1]){
+    const pipeGeo = new THREE.CylinderGeometry(0.95, 1.15, 3.2, 12);
+    pipeGeo.rotateZ(Math.PI / 2);
+    mesh(pipeGeo, M.carbon, -11.4, 4.6, 3.3 * s);
+    const tipGeo = new THREE.CylinderGeometry(1.15, 1.35, 2.4, 12);
+    tipGeo.rotateZ(Math.PI / 2);
+    const tip = mesh(tipGeo, M.chrome, -13.0, 4.6, 3.3 * s);
+    const tipIn = new THREE.Mesh(new THREE.CylinderGeometry(0.85, 0.95, 2.5, 10).rotateZ(Math.PI / 2), M.core);
+    tip.add(tipIn);
+    exhTips.push(tip);
+  }
+  // --- 尾灯条 ---
+  const tail = mesh(new THREE.BoxGeometry(0.5, 0.9, 8.6), M.lampR.clone(), -12.2, 6.2, 0);
+  // --- 车轮：轮胎圆环 + 金色轮圈 + 五辐条 + 刹车盘 + 变形光环 ---
+  const wheels = [], fronts = [], spins = [], wheelRings = [];
+  const mkWheel = (x, z, front) => {
+    const wg = new THREE.Group(); wg.position.set(x, 3.6, z);
+    const spinGrp = new THREE.Group();
+    const tire = new THREE.Mesh(new THREE.TorusGeometry(2.45, 1.2, 10, 18), M.tire);
+    spinGrp.add(tire);
+    const rimGeo = new THREE.CylinderGeometry(1.85, 1.85, 2.0, 14);
+    rimGeo.rotateX(Math.PI / 2);
+    spinGrp.add(new THREE.Mesh(rimGeo, M.rim));
+    for (let i = 0; i < 5; i++){
+      const spoke = new THREE.Mesh(new THREE.BoxGeometry(0.55, 2.3, 0.5), M.rim);
+      spoke.rotation.z = i * Math.PI * 2 / 5;
+      spoke.position.z = Math.sign(z) * 1.15;
+      spinGrp.add(spoke);
+    }
+    const hub = new THREE.Mesh(new THREE.SphereGeometry(0.7, 8, 8), M.chrome);
+    hub.position.z = Math.sign(z) * 1.35; spinGrp.add(hub);
+    wg.add(spinGrp); spins.push(spinGrp);
+    const discGeo = new THREE.CylinderGeometry(1.45, 1.45, 0.35, 12);
+    discGeo.rotateX(Math.PI / 2);
+    const disc = new THREE.Mesh(discGeo, M.chrome);
+    disc.position.z = -Math.sign(z) * 0.6; wg.add(disc);
+    const ringGeo = new THREE.TorusGeometry(3.05, 0.22, 8, 22);
+    const ring = new THREE.Mesh(ringGeo, M.glow.clone());
+    wg.add(ring); wheelRings.push(ring);
+    g.add(wg); wheels.push(wg); if (front) fronts.push(wg);
+  };
+  mkWheel(8.2, -7.4, true); mkWheel(8.2, 7.4, true);
+  mkWheel(-7.8, -7.8, false); mkWheel(-7.8, 7.8, false);
+  // --- 车底能量光晕（变形时亮起） ---
+  const under = new THREE.Mesh(new THREE.PlaneGeometry(30, 20), M.glow.clone());
+  under.rotation.x = -Math.PI / 2; under.position.y = 1.1; g.add(under);
+  // --- 贴地阴影 ---
+  const shadow = new THREE.Mesh(new THREE.PlaneGeometry(32, 32),
     new THREE.MeshBasicMaterial({ map: blobTex, transparent: true, depthWrite: false, opacity: 0.55 }));
   shadow.rotation.x = -Math.PI / 2;
-  // 氮气火焰（两束锥形，喷射时显示）
+  // --- 氮气火焰 ---
   const flames = [];
   for (const s of [-1, 1]){
-    const f = new THREE.Mesh(new THREE.ConeGeometry(1.6, 9, 10),
-      new THREE.MeshBasicMaterial({ color: 0x57c8ff, transparent: true, opacity: 0.9 }));
-    f.rotation.z = Math.PI / 2;                    // 锥尖朝 -X (车尾方向)
-    f.position.set(-16.5, 5.2, 3.2 * s); f.visible = false;
+    const f = new THREE.Mesh(new THREE.ConeGeometry(1.5, 9, 10),
+      new THREE.MeshBasicMaterial({ color: 0x57c8ff, transparent: true, opacity: 0.9,
+        blending: THREE.AdditiveBlending, depthWrite: false }));
+    f.rotation.z = Math.PI / 2;
+    f.position.set(-17.5, 4.6, 3.3 * s); f.visible = false;
     g.add(f); flames.push(f);
   }
-  return { group: g, wheels, fronts, shadow, flames, spin: 0 };
+  return { group: g, wheels, fronts, spins, shadow, flames, spin: 0,
+    trans: { wingGrp, wingBaseY: 10.4, noseGrp, noseBaseX: 10.6, core, coreRing, flaps, exhTips,
+      exhBaseX: -13.0, strips, under, wheelRings, tail } };
 }
 function buildTree(v){
   const g = new THREE.Group();
@@ -479,6 +623,8 @@ function buildScene(){
   scene.add(new THREE.HemisphereLight(0xffffff, new THREE.Color(theme.grass2), 0.95));
   const sun = new THREE.DirectionalLight(0xfff2d8, 0.85);
   sun.position.set(600, 900, -400); scene.add(sun);
+  const rim = new THREE.DirectionalLight(0xcfe4ff, 0.35);       // 轮廓补光(车漆高光)
+  rim.position.set(-500, 400, 600); scene.add(rim);
   // 天空穹顶（渐变 + 不受雾影响）
   const skyTex = makeSpriteTex((c, s) => {
     const g = c.createLinearGradient(0, 0, 0, s);
@@ -574,7 +720,7 @@ function makeKart(name, color, isPlayer, startSlot){
     x: p0.x - p0.dy * side * 42, y: p0.y + p0.dx * side * 42,
     angle: p0.dir, vx: 0, vy: 0, speed: 0, h: 0, pitch: 0, steerVis: 0,
     drifting: false, driftT: 0, gauge: 0, nitroCount: 0,
-    boostT: 0, boostKind: "", cutT: 0, dualT: 0, padT: 0,
+    boostT: 0, boostKind: "", cutT: 0, dualT: 0, padT: 0, transP: 0, brk: 0,
     idx: (pathN - 8 - startSlot * 6 + pathN) % pathN, lap: 1, halfFlag: false,
     lapTimes: [], lapStart: 0, finished: false, finishTime: 0,
     offroad: false, wallHit: 0, visSlip: 0, rank: startSlot + 1,
@@ -601,6 +747,7 @@ window.__test = {
   release(k){ keys[k] = false; keyReleased(k); },
   start(t, c){ startRace(t == null ? 0 : t, c == null ? 0 : c); },
   autoSteer(v){ G.autoSteer = !!v; },
+  setCam(o){ G.camOverride = o || null; },
   placeOnStraight(spd){
     let bi = 0, bc = 1e9;
     for (let i = 0; i < pathN; i++){
@@ -714,6 +861,7 @@ function updateKart(k, dt){
     steer = clamp(da * 3, -1, 1); thr = 0.6; wantDrift = false;
   }
   k.steerVis += (steer - k.steerVis) * clamp(10 * dt, 0, 1);
+  k.brk = brk;
 
   // 漂移状态机
   if (wantDrift && !k.drifting && k.speed > PH.driftMinSpd && Math.abs(steer) > 0.15){
@@ -942,15 +1090,36 @@ function syncScene(dt){
     if (k.wallHit > 0) lean += Math.sin(G.time * 40) * 0.06;
     m.group.rotation.x = lean;
     m.spin += k.speed * dt / 3.5;
-    for (const w of m.wheels) w.children[0].rotation.z = -m.spin;
+    for (const sp of m.spins) sp.rotation.z = -m.spin;
     for (const fw of m.fronts) fw.rotation.y = -k.steerVis * 0.42 + (k.drifting ? -k.visSlip * 0.3 : 0);
     m.shadow.position.set(k.x, k.h + 0.55, k.y);
     const boosting = k.boostT > 0;
+    // ---- 氮气变形（跑跑卡丁车式：喷射时机甲展开） ----
+    k.transP = k.transP == null ? 0 : k.transP;
+    const prevP = k.transP;
+    k.transP += ((boosting ? 1 : 0) - k.transP) * clamp(7 * dt, 0, 1);
+    if (k.isPlayer && prevP < 0.4 && k.transP >= 0.4){          // 变形机械音
+      blip(220, 0.09, "square", 0.22); blip(330, 0.09, "square", 0.22, 0.07); blip(520, 0.14, "sawtooth", 0.18, 0.13);
+    }
+    const p = k.transP * k.transP * (3 - 2 * k.transP);         // 平滑缓动
+    const T = m.trans;
+    T.wingGrp.position.y = T.wingBaseY + p * 3.2;               // 尾翼抬升展开
+    T.wingGrp.rotation.z = p * 0.34;
+    T.wingGrp.scale.z = 1 + p * 0.18;
+    T.noseGrp.position.x = T.noseBaseX + p * 3.0;               // 鼻锥前移露出涡轮
+    for (const fg of T.flaps) fg.rotation.y = -fg.userData.side * p * 0.85;  // 侧翼板张开
+    for (let i = 0; i < T.exhTips.length; i++) T.exhTips[i].position.x = T.exhBaseX - p * 2.4;
+    T.core.rotation.x += dt * (4 + 46 * p);                     // 涡轮旋转
+    T.core.visible = true;
+    for (const st of T.strips) st.material.opacity = 0.10 + 0.9 * p;
+    for (const r of T.wheelRings){ r.material.opacity = p * 0.95; r.scale.setScalar(1 + p * 0.12); }
+    T.under.material.opacity = p * 0.5;
+    T.tail.material.opacity = 0.4 + (k.brk ? 0.6 : 0) + p * 0.2; // 刹车灯
     for (const fl of m.flames){
       fl.visible = boosting || k.padT > 0 || k.cutT > 0;
       if (fl.visible){
-        const sc = 0.8 + Math.random() * 0.5;
-        fl.scale.set(sc, boosting ? 1.15 : 0.65, sc);
+        const sc = (0.8 + Math.random() * 0.5) * (1 + p * 0.5);
+        fl.scale.set(sc, boosting ? 1.25 : 0.65, sc);
         fl.material.color.set(boosting ? 0x57c8ff : 0xffb020);
       }
     }
@@ -994,6 +1163,10 @@ function syncScene(dt){
   const targetFov = boosting ? 74 : 62 + clamp(P.speed / PH.maxSpd, 0, 1) * 5;
   G.fov += (targetFov - G.fov) * clamp(6 * dt, 0, 1);
   camera.fov = G.fov; camera.updateProjectionMatrix();
+  if (G.camOverride){                                       // 测试/展示用相机覆盖
+    const o = G.camOverride;
+    camera.position.set(o.x, o.y, o.z); camera.lookAt(o.tx, o.ty, o.tz);
+  }
 }
 // 世界坐标 → HUD 屏幕坐标（供名字标签等）
 function worldToScreen(x, h, y){

@@ -81,6 +81,8 @@ for (let i = 0; i < 16; i++){
 }
 p = await page.evaluate(() => ({ max: window.__test.PH.maxSpd }));
 check("氮气喷射突破普通极速", peak > p.max * 1.05, `峰值=${peak.toFixed(0)} (普通极速${p.max})`);
+const trans = await page.evaluate(() => window.__game.player.transP || 0);
+check("氮气变形触发(车体机构展开)", trans > 0.5, `transP=${trans.toFixed(2)}`);
 if (SHOTS) await page.screenshot({ path: path.join(SHOTS, "04-nitro.png") });
 
 // 双喷：漂移结束瞬间接氮气
