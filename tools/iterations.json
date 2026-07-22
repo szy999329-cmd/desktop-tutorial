@@ -1,0 +1,32 @@
+[
+  {
+    "n": 1,
+    "score": 97.8,
+    "behaviorPass": "16/16"
+  },
+  {
+    "n": 2,
+    "score": 98,
+    "behaviorPass": "17/17"
+  },
+  {
+    "n": 3,
+    "score": 99,
+    "behaviorPass": "18/18"
+  },
+  {
+    "n": 4,
+    "score": 99,
+    "behaviorPass": "19/19"
+  },
+  {
+    "n": 5,
+    "score": 97.3,
+    "behaviorPass": "20/21"
+  },
+  {
+    "n": 6,
+    "score": 99,
+    "behaviorPass": "21/21"
+  }
+]

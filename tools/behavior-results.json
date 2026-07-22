@@ -1,0 +1,107 @@
+[
+  {
+    "id": "加载并进入倒计时",
+    "ok": true,
+    "detail": "state=COUNTDOWN"
+  },
+  {
+    "id": "起步加速(完美起步/起步加速)机制",
+    "ok": true,
+    "detail": "msg=\"起步加速！\" boostT=1.10"
+  },
+  {
+    "id": "油门加速达到高速",
+    "ok": true,
+    "detail": "speed=262/262"
+  },
+  {
+    "id": "漂移状态触发",
+    "ok": true,
+    "detail": "drifting=true"
+  },
+  {
+    "id": "漂移产生侧滑(甩尾)",
+    "ok": true,
+    "detail": "slip=0.72rad"
+  },
+  {
+    "id": "漂移积攒集气条",
+    "ok": true,
+    "detail": "gauge=24.3"
+  },
+  {
+    "id": "断位漂移小喷",
+    "ok": true,
+    "detail": "cutT=0.45"
+  },
+  {
+    "id": "双喷判定窗口开启",
+    "ok": true,
+    "detail": "dualT=0.35"
+  },
+  {
+    "id": "集气满获得 N₂O",
+    "ok": true,
+    "detail": "nitroCount=1"
+  },
+  {
+    "id": "氮气喷射突破普通极速",
+    "ok": true,
+    "detail": "峰值=345 (普通极速262)"
+  },
+  {
+    "id": "氮气变形触发(车体机构展开)",
+    "ok": true,
+    "detail": "transP=1.00"
+  },
+  {
+    "id": "双喷(漂移接喷射)触发",
+    "ok": true,
+    "detail": "boostKind=dual"
+  },
+  {
+    "id": "6 车同场竞技(1 玩家 + 5 AI)",
+    "ok": true,
+    "detail": "karts=6"
+  },
+  {
+    "id": "排名系统运作",
+    "ok": true,
+    "detail": "rank=1"
+  },
+  {
+    "id": "渲染帧率(软渲染基线)≥8fps",
+    "ok": true,
+    "detail": "fps=10 (headless 软件渲染)"
+  },
+  {
+    "id": "WebGL 真 3D 渲染上下文",
+    "ok": true,
+    "detail": "THREE.WebGLRenderer"
+  },
+  {
+    "id": "第二赛道(冰封雪谷)可加载",
+    "ok": true,
+    "detail": "state=COUNTDOWN"
+  },
+  {
+    "id": "第三赛道(黄金沙城)可加载",
+    "ok": true,
+    "detail": "state=COUNTDOWN"
+  },
+  {
+    "id": "霓虹漂移拖尾生成",
+    "ok": true,
+    "detail": "拖尾点=6"
+  },
+  {
+    "id": "车库展示模式可进入",
+    "ok": true,
+    "detail": "state=GARAGE"
+  },
+  {
+    "id": "无 JS 运行错误",
+    "ok": true,
+    "detail": "clean"
+  }
+]
