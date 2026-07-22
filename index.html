@@ -39,6 +39,14 @@
     cursor: pointer; box-shadow: 0 6px 0 #c05500, 0 12px 24px rgba(120,40,0,.4); transition: transform .1s; }
   #startBtn:hover { transform: translateY(-2px) scale(1.03); }
   #startBtn:active { transform: translateY(3px); box-shadow: 0 2px 0 #c05500; }
+  #garageBtn { margin-top: 12px; font-size: 16px; font-weight: 800; letter-spacing: 3px; color: #fff;
+    background: linear-gradient(#4a9df0, #2a6fd0); border: none; border-radius: 26px; padding: 9px 34px;
+    cursor: pointer; box-shadow: 0 4px 0 #1a4a9a; transition: transform .1s; }
+  #garageBtn:hover { transform: translateY(-1px) scale(1.03); }
+  #garage { background: transparent; pointer-events: none; justify-content: flex-end; }
+  #garage .panel { pointer-events: auto; margin-bottom: 26px; background: rgba(16,24,44,.82); }
+  #garage .panel .label { color: #9fc0e8; }
+  #garage .gBtns { margin-top: 12px; display: flex; gap: 10px; justify-content: center; }
   .help { margin-top: 18px; color: #124a8f; font-size: 13px; background: rgba(255,255,255,.75);
     border-radius: 10px; padding: 8px 18px; line-height: 1.9; }
   .help b { background: #124a8f; color: #fff; border-radius: 5px; padding: 1px 7px; font-size: 12px; margin: 0 2px; }
@@ -83,9 +91,20 @@
       </div>
     </div>
     <button id="startBtn">开始比赛</button>
+    <button id="garageBtn">🏟️ 车库展示</button>
     <div class="help">
       <b>↑</b>加速　<b>↓</b>刹车　<b>← →</b>转向　<b>Shift</b>漂移集气　<b>Ctrl</b>氮气喷射　<b>Esc</b>暂停<br>
       漂移积攒集气条，攒满获得 N₂O！漂移结束瞬间接喷射可触发 <span style="color:#ff7a00;font-weight:800">双喷</span>！
+    </div>
+  </div>
+  <div id="garage" class="overlay" style="display:none">
+    <div class="panel">
+      <div class="label">车 库 · 360° 展 示</div>
+      <div class="swatches" id="gSwatches"></div>
+      <div class="gBtns">
+        <button id="morphBtn" class="trackBtn t2">⚡ 变形演示</button>
+        <button id="garageBackBtn" class="trackBtn t1">返回菜单</button>
+      </div>
     </div>
   </div>
   <div id="result" class="overlay"><div class="card">

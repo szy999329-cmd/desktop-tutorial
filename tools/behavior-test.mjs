@@ -124,6 +124,31 @@ for (const [ti, tname] of [[1, "第二赛道(冰封雪谷)"], [2, "第三赛道(
     await page.waitForTimeout(2500); await page.screenshot({ path: path.join(SHOTS, `05-track${ti + 1}.png`) }); }
 }
 
+// 霓虹拖尾：漂移时应有拖尾点（先等倒计时结束进入 RACING）
+await page.waitForFunction(() => window.__game.state === "RACING", { timeout: 8000 });
+await page.evaluate(() => { window.__test.placeOnStraight(230); window.__test.press("up");
+  window.__test.press("right"); window.__test.press("drift"); });
+await page.waitForTimeout(700);
+const trailPts = await page.evaluate(() => {
+  const G2 = window.__game;
+  let n = 0;
+  // kartMeshMap 不可直接访问，通过场景粒子间接验证 → 使用暴露的检测钩子
+  return window.__test.trailCount ? window.__test.trailCount() : -1;
+});
+check("霓虹漂移拖尾生成", trailPts > 3, `拖尾点=${trailPts}`);
+await page.evaluate(() => { window.__test.release("drift"); window.__test.release("right"); window.__test.release("up"); });
+
+// 车库 360° 展示
+await page.evaluate(() => window.__test.openGarage());
+await page.waitForTimeout(600);
+const gState = await page.evaluate(() => window.__game.state);
+check("车库展示模式可进入", gState === "GARAGE", `state=${gState}`);
+if (SHOTS) await page.screenshot({ path: path.join(SHOTS, "06-garage.png") });
+await page.evaluate(() => window.__test.toggleMorph());
+await page.waitForTimeout(1100);
+if (SHOTS) await page.screenshot({ path: path.join(SHOTS, "07-garage-morph.png") });
+await page.evaluate(() => window.__test.closeGarage());
+
 check("无 JS 运行错误", errors.length === 0, errors.slice(0, 3).join(" | ") || "clean");
 
 await browser.close();

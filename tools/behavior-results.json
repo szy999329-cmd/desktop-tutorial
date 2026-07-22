@@ -27,7 +27,7 @@
   {
     "id": "漂移积攒集气条",
     "ok": true,
-    "detail": "gauge=20.2"
+    "detail": "gauge=24.3"
   },
   {
     "id": "断位漂移小喷",
@@ -88,6 +88,16 @@
     "id": "第三赛道(黄金沙城)可加载",
     "ok": true,
     "detail": "state=COUNTDOWN"
+  },
+  {
+    "id": "霓虹漂移拖尾生成",
+    "ok": true,
+    "detail": "拖尾点=6"
+  },
+  {
+    "id": "车库展示模式可进入",
+    "ok": true,
+    "detail": "state=GARAGE"
   },
   {
     "id": "无 JS 运行错误",

@@ -282,6 +282,73 @@ function initThree(){
   renderer = new THREE.WebGLRenderer({ canvas: glCv, antialias: true });
   renderer.setSize(W, H, false);
   camera = new THREE.PerspectiveCamera(62, W / H, 2, 5200);
+  if (!circleTex) circleTex = softCircleTex();
+  if (!blobTex) blobTex = makeSpriteTex((c, s) => {
+    const g = c.createRadialGradient(s/2, s/2, 2, s/2, s/2, s/2 * 0.9);
+    g.addColorStop(0, "rgba(0,0,0,0.75)"); g.addColorStop(1, "rgba(0,0,0,0)");
+    c.fillStyle = g; c.fillRect(0, 0, s, s);
+  });
+}
+// ---- 霓虹拖尾光带（漂移/氮气时后轮拖出的渐隐条带） ----
+const TRAIL_MAX = 34, TRAIL_LIFE = 0.5;
+function makeTrail(){
+  const geo = new THREE.BufferGeometry();
+  const pos = new Float32Array(TRAIL_MAX * 2 * 3);
+  const col = new Float32Array(TRAIL_MAX * 2 * 3);
+  geo.setAttribute("position", new THREE.BufferAttribute(pos, 3).setUsage(THREE.DynamicDrawUsage));
+  geo.setAttribute("color", new THREE.BufferAttribute(col, 3).setUsage(THREE.DynamicDrawUsage));
+  const idx = [];
+  for (let i = 0; i < TRAIL_MAX - 1; i++){
+    const a = i * 2;
+    idx.push(a, a + 1, a + 2, a + 1, a + 3, a + 2);
+  }
+  geo.setIndex(idx);
+  const mesh = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({
+    vertexColors: true, transparent: true, blending: THREE.AdditiveBlending,
+    depthWrite: false, side: THREE.DoubleSide }));
+  mesh.frustumCulled = false;
+  return { mesh, pts: [] };
+}
+function updateTrail(tr, emit, x, y, h, r, g, b, dt){
+  for (const p of tr.pts) p.t += dt;
+  while (tr.pts.length && tr.pts[0].t > TRAIL_LIFE) tr.pts.shift();
+  if (emit){
+    tr.pts.push({ x, y, h, t: 0 });
+    if (tr.pts.length > TRAIL_MAX) tr.pts.shift();
+  }
+  const pos = tr.mesh.geometry.attributes.position.array;
+  const col = tr.mesh.geometry.attributes.color.array;
+  const n = tr.pts.length;
+  for (let i = 0; i < TRAIL_MAX; i++){
+    const p = tr.pts[Math.min(i, n - 1)] || { x: 0, y: 0, h: -999, t: TRAIL_LIFE };
+    const q = tr.pts[Math.min(i + 1, n - 1)] || p;
+    let dx = q.x - p.x, dy = q.y - p.y;
+    const L = Math.hypot(dx, dy) || 1; dx /= L; dy /= L;
+    const fade = Math.max(0, 1 - p.t / TRAIL_LIFE);
+    const w = 1.5 * fade + 0.05;
+    const o = i * 6;
+    pos[o] = p.x - dy * w; pos[o + 1] = p.h; pos[o + 2] = p.y + dx * w;
+    pos[o + 3] = p.x + dy * w; pos[o + 4] = p.h; pos[o + 5] = p.y - dx * w;
+    const br = fade * fade;
+    col[o] = r * br; col[o + 1] = g * br; col[o + 2] = b * br;
+    col[o + 3] = r * br; col[o + 4] = g * br; col[o + 5] = b * br;
+  }
+  tr.mesh.geometry.attributes.position.needsUpdate = true;
+  tr.mesh.geometry.attributes.color.needsUpdate = true;
+}
+// ---- 氮气变形动画（比赛与车库共用） ----
+function applyTransform(m, p, dt){
+  const T = m.trans;
+  T.wingGrp.position.y = T.wingBaseY + p * 3.2;
+  T.wingGrp.rotation.z = p * 0.34;
+  T.wingGrp.scale.z = 1 + p * 0.18;
+  T.noseGrp.position.x = T.noseBaseX + p * 3.0;
+  for (const fg of T.flaps) fg.rotation.y = -fg.userData.side * p * 0.85;
+  for (const tip of T.exhTips) tip.position.x = T.exhBaseX - p * 2.4;
+  T.core.rotation.x += dt * (4 + 46 * p);
+  for (const st of T.strips) st.material.opacity = 0.10 + 0.9 * p;
+  for (const r of T.wheelRings){ r.material.opacity = p * 0.95; r.scale.setScalar(1 + p * 0.12); }
+  T.under.material.opacity = p * 0.5;
 }
 function gridGeometry(seg, hFn){
   const g = new THREE.BufferGeometry();
@@ -701,6 +768,8 @@ function buildScene(){
   for (const k of G.karts){
     const km = buildKartMesh(k.color);
     scene.add(km.group); scene.add(km.shadow);
+    km.trails = [makeTrail(), makeTrail()];
+    for (const tr of km.trails) scene.add(tr.mesh);
     kartMeshMap.set(k, km);
   }
   // 粒子精灵池
@@ -709,6 +778,93 @@ function buildScene(){
     const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: circleTex, transparent: true, depthWrite: false }));
     s.visible = false; scene.add(s); particlePool.push(s);
   }
+}
+
+// ---------- 车库 360° 展示 ----------
+let garage = null;
+function buildGarage(colorIdx){
+  initThree();
+  const sc = new THREE.Scene();
+  sc.background = new THREE.Color(0x0c1120);
+  const domeTex = makeSpriteTex((c, s) => {
+    const g = c.createLinearGradient(0, 0, 0, s);
+    g.addColorStop(0, "#233152"); g.addColorStop(0.55, "#101a30"); g.addColorStop(1, "#080c16");
+    c.fillStyle = g; c.fillRect(0, 0, s, s);
+  }, 128);
+  const dome = new THREE.Mesh(new THREE.SphereGeometry(400, 18, 12),
+    new THREE.MeshBasicMaterial({ map: domeTex, side: THREE.BackSide }));
+  sc.add(dome);
+  sc.add(new THREE.HemisphereLight(0x8899bb, 0x222833, 0.75));
+  const key = new THREE.DirectionalLight(0xffffff, 1.05); key.position.set(60, 95, 45); sc.add(key);
+  const rim = new THREE.DirectionalLight(0x5fa8ff, 0.85); rim.position.set(-70, 40, -65); sc.add(rim);
+  const warm = new THREE.PointLight(0xffc890, 0.5, 300); warm.position.set(-40, 30, 70); sc.add(warm);
+  const floor = new THREE.Mesh(new THREE.CircleGeometry(240, 40),
+    new THREE.MeshPhongMaterial({ color: 0x12161f, shininess: 90, specular: 0x445566 }));
+  floor.rotation.x = -Math.PI / 2; sc.add(floor);
+  const podium = new THREE.Mesh(new THREE.CylinderGeometry(30, 34, 4, 40),
+    new THREE.MeshPhongMaterial({ color: 0x1c2230, shininess: 70, specular: 0x556677 }));
+  podium.position.y = 2; sc.add(podium);
+  const ringGlow = new THREE.Mesh(new THREE.TorusGeometry(31.5, 0.8, 8, 48),
+    new THREE.MeshBasicMaterial({ color: 0x4de1ff, transparent: true, opacity: 0.8,
+      blending: THREE.AdditiveBlending, depthWrite: false }));
+  ringGlow.rotation.x = Math.PI / 2; ringGlow.position.y = 4.2; sc.add(ringGlow);
+  const m = buildKartMesh(KART_COLORS[colorIdx]);
+  m.group.position.y = 4; sc.add(m.group);
+  m.shadow.position.y = 4.15; sc.add(m.shadow);
+  return { scene: sc, m, ringGlow, turn: 0.6, demoOn: false, demoP: 0, colorIdx };
+}
+function garageSetColor(i){
+  if (!garage) return;
+  garage.scene.remove(garage.m.group); garage.scene.remove(garage.m.shadow);
+  garage.m = buildKartMesh(KART_COLORS[i]);
+  garage.m.group.position.y = 4; garage.scene.add(garage.m.group);
+  garage.m.shadow.position.y = 4.15; garage.scene.add(garage.m.shadow);
+  garage.colorIdx = i;
+}
+function garageTick(dt){
+  const c = garage; if (!c) return;
+  c.turn += dt * 0.55;
+  c.demoP += ((c.demoOn ? 1 : 0) - c.demoP) * clamp(5 * dt, 0, 1);
+  const p = c.demoP * c.demoP * (3 - 2 * c.demoP);
+  c.m.group.rotation.y = c.turn;
+  applyTransform(c.m, p, dt);
+  c.m.trans.tail.material.opacity = 0.4 + p * 0.3;
+  for (const sp of c.m.spins) sp.rotation.z -= dt * (1.2 + 9 * p);
+  for (const fl of c.m.flames){
+    fl.visible = p > 0.55;
+    if (fl.visible){ const s = 0.7 + Math.random() * 0.5; fl.scale.set(s, 1.1, s); }
+  }
+  c.ringGlow.material.opacity = 0.5 + 0.4 * Math.sin(G.time * 3) * 0.5 + p * 0.3;
+  G.time += dt;
+  camera.fov = 46; camera.updateProjectionMatrix();
+  const bob = Math.sin(G.time * 0.6) * 3;
+  camera.position.set(52, 26 + bob, 52);
+  camera.lookAt(0, 11, 0);
+  renderer.render(c.scene, camera);
+  ctx.clearRect(0, 0, W, H);
+  ctx.textAlign = "center";
+  ctx.font = "bold 34px sans-serif";
+  ctx.strokeStyle = "rgba(10,16,32,0.9)"; ctx.lineWidth = 7;
+  ctx.strokeText("疾风 GT-X · 变形竞速卡丁车", W / 2, 66);
+  ctx.fillStyle = "#eaf4ff"; ctx.fillText("疾风 GT-X · 变形竞速卡丁车", W / 2, 66);
+  ctx.font = "14px sans-serif"; ctx.fillStyle = "#9fc0e8";
+  ctx.fillText("金属车漆 · 镀铬轮毂 · 双层定风翼 · N₂O 机甲变形系统", W / 2, 92);
+}
+function openGarage(){
+  garage = buildGarage(G.colorIdx);
+  G.state = "GARAGE";
+  document.getElementById("menu").style.display = "none";
+  document.getElementById("garage").style.display = "flex";
+  for (const id of ["swatches", "gSwatches"]){       // 同步色板高亮
+    document.getElementById(id).querySelectorAll(".swatch")
+      .forEach((e, j) => e.classList.toggle("sel", j === G.colorIdx));
+  }
+  initAudio();
+}
+function closeGarage(){
+  G.state = "MENU";
+  document.getElementById("garage").style.display = "none";
+  document.getElementById("menu").style.display = "flex";
 }
 
 // ---------- 卡丁车实体 ----------
@@ -748,6 +904,12 @@ window.__test = {
   start(t, c){ startRace(t == null ? 0 : t, c == null ? 0 : c); },
   autoSteer(v){ G.autoSteer = !!v; },
   setCam(o){ G.camOverride = o || null; },
+  openGarage, closeGarage,
+  toggleMorph(){ if (garage) garage.demoOn = !garage.demoOn; },
+  trailCount(){
+    const m = kartMeshMap.get(G.player);
+    return m && m.trails ? m.trails[0].pts.length + m.trails[1].pts.length : 0;
+  },
   placeOnStraight(spd){
     let bi = 0, bc = 1e9;
     for (let i = 0; i < pathN; i++){
@@ -1102,19 +1264,24 @@ function syncScene(dt){
       blip(220, 0.09, "square", 0.22); blip(330, 0.09, "square", 0.22, 0.07); blip(520, 0.14, "sawtooth", 0.18, 0.13);
     }
     const p = k.transP * k.transP * (3 - 2 * k.transP);         // 平滑缓动
-    const T = m.trans;
-    T.wingGrp.position.y = T.wingBaseY + p * 3.2;               // 尾翼抬升展开
-    T.wingGrp.rotation.z = p * 0.34;
-    T.wingGrp.scale.z = 1 + p * 0.18;
-    T.noseGrp.position.x = T.noseBaseX + p * 3.0;               // 鼻锥前移露出涡轮
-    for (const fg of T.flaps) fg.rotation.y = -fg.userData.side * p * 0.85;  // 侧翼板张开
-    for (let i = 0; i < T.exhTips.length; i++) T.exhTips[i].position.x = T.exhBaseX - p * 2.4;
-    T.core.rotation.x += dt * (4 + 46 * p);                     // 涡轮旋转
-    T.core.visible = true;
-    for (const st of T.strips) st.material.opacity = 0.10 + 0.9 * p;
-    for (const r of T.wheelRings){ r.material.opacity = p * 0.95; r.scale.setScalar(1 + p * 0.12); }
-    T.under.material.opacity = p * 0.5;
-    T.tail.material.opacity = 0.4 + (k.brk ? 0.6 : 0) + p * 0.2; // 刹车灯
+    applyTransform(m, p, dt);
+    m.trans.tail.material.opacity = 0.4 + (k.brk ? 0.6 : 0) + p * 0.2; // 刹车灯
+    // 霓虹拖尾：漂移黄橙(满气转红) / 氮气青蓝
+    if (m.trails){
+      const f = fwdOf(k.angle), rx = -f.y, ry = f.x;
+      const driftEmit = k.drifting && Math.abs(k.visSlip) > 0.12;
+      const boostEmit = k.boostT > 0;
+      const full = k.gauge > 72;
+      const cr = boostEmit ? 0.25 : (full ? 1.0 : 1.0);
+      const cg = boostEmit ? 0.75 : (full ? 0.28 : 0.75);
+      const cb = boostEmit ? 1.0 : (full ? 0.12 : 0.1);
+      for (let s = 0; s < 2; s++){
+        const side = s === 0 ? -1 : 1;
+        updateTrail(m.trails[s], driftEmit || boostEmit,
+          k.x - f.x * 9 + rx * 7.6 * side, k.y - f.y * 9 + ry * 7.6 * side,
+          k.h + 1.1, cr, cg, cb, dt);
+      }
+    }
     for (const fl of m.flames){
       fl.visible = boosting || k.padT > 0 || k.cutT > 0;
       if (fl.visible){
@@ -1431,6 +1598,7 @@ function frame(now){
   if (dt > 0.1) dt = 0.1;
   G.fpsAcc += dt; G.fpsN++;
   if (G.fpsAcc > 0.5){ G.fps = G.fpsN / G.fpsAcc; G.fpsAcc = 0; G.fpsN = 0; }
+  if (G.state === "GARAGE"){ garageTick(dt); return; }
   if (G.state === "MENU" || G.state === "PAUSE" || G.state === "RESULT"){ return; }
   G.time += dt;
   tickBGM(dt);
@@ -1495,14 +1663,26 @@ requestAnimationFrame(frame);
 
 // ---------- 菜单交互 ----------
 {
-  const sw = document.getElementById("swatches");
-  KART_COLORS.forEach((c, i) => {
-    const d = document.createElement("div");
-    d.className = "swatch" + (i === 0 ? " sel" : ""); d.style.background = c;
-    d.onclick = () => { G.colorIdx = i;
-      sw.querySelectorAll(".swatch").forEach(e => e.classList.remove("sel")); d.classList.add("sel"); };
-    sw.appendChild(d);
-  });
+  const swBoxes = [document.getElementById("swatches"), document.getElementById("gSwatches")];
+  const selectColor = i => {
+    G.colorIdx = i;
+    for (const box of swBoxes){
+      box.querySelectorAll(".swatch").forEach((e, j) => e.classList.toggle("sel", j === i));
+    }
+    if (G.state === "GARAGE") garageSetColor(i);
+  };
+  for (const box of swBoxes){
+    KART_COLORS.forEach((c, i) => {
+      const d = document.createElement("div");
+      d.className = "swatch" + (i === 0 ? " sel" : ""); d.style.background = c;
+      d.onclick = () => selectColor(i);
+      box.appendChild(d);
+    });
+  }
+  document.getElementById("garageBtn").onclick = openGarage;
+  document.getElementById("garageBackBtn").onclick = closeGarage;
+  document.getElementById("morphBtn").onclick = () => { if (garage){ garage.demoOn = !garage.demoOn;
+    blip(garage.demoOn ? 330 : 220, 0.1, "square", 0.2); } };
   document.querySelectorAll(".trackBtn").forEach(b => {
     b.onclick = () => { G.trackIdx = +b.dataset.t;
       document.querySelectorAll(".trackBtn").forEach(e => e.classList.remove("sel")); b.classList.add("sel"); };
